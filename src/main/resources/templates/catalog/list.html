@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::content})}">
+<head>
+	<title>Catalog List</title>
+</head>
+<body>
+<div th:fragment="content">
+	<h1>Catalog Management</h1>
+
+	<div class="filter-panel">
+		<form id="filterForm" th:action="@{/catalogs}" method="get" th:object="${filter}">
+			<div class="row g-3">
+				<div class="col-md-3">
+					<label class="form-label">Module</label>
+					<select id="moduloSelect" class="form-select filter-select" th:field="*{modulo}">
+						<option value="">All Modules</option>
+						<option th:each="modulo : ${modulos}"
+								th:value="${modulo}"
+								th:text="${modulo}"></option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Field (CAMPO)</label>
+					<select id="campoSelect" class="form-select filter-select" th:field="*{campo}">
+						<option value="">All Fields</option>
+						<option th:each="campo : ${campos}"
+								th:value="${campo}"
+								th:text="${campo}"
+								th:attr="data-modulo='all'"></option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">CADENA</label>
+					<select id="sbsNoSelect" class="form-select filter-select" th:field="*{sbsNo}">
+						<option value="1">GNC</option>
+						<option value="2">Arca</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label class="form-label">Has Conversion</label>
+					<select id="hasConversionSelect" class="form-select filter-select" th:field="*{hasConversion}">
+						<option value="">All</option>
+						<option value="true">Yes</option>
+						<option value="false">No</option>
+					</select>
+				</div>
+			</div>
+			<div class="mt-3">
+				<a th:href="@{/catalogs}" class="btn btn-secondary">Clear Filters</a>
+			</div>
+		</form>
+	</div>
+
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">Catalog Items (<span th:text="${#lists.size(catalogs)}">0</span>)</h5>
+
+			<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead>
+					<tr>
+						<th>CADENA</th>
+						<th>Module</th>
+						<th>Campo</th>
+						<th>Valor</th>
+						<th>Description</th>
+						<th>Conversion</th>
+						<th>Actions</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="item : ${catalogs}">
+						<td th:text="${item.cadenaDisplay}"></td>
+						<td th:text="${item.modulo}"></td>
+						<td th:text="${item.campo}"></td>
+						<td th:text="${item.valor}"></td>
+						<td th:text="${item.descripcion}"></td>
+						<td>
+								<span th:if="${item.hasConversion}"
+									  class="badge bg-success conversion-badge"
+									  th:text="${item.conversionDomain}">Domain</span>
+							<span th:unless="${item.hasConversion}"
+								  class="badge bg-secondary conversion-badge">None</span>
+						</td>
+						<td>
+							<div class="btn-group btn-group-sm" role="group">
+								<a th:if="${!item.hasConversion}"
+								   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion})}"
+								   class="btn btn-primary btn-sm"
+								   title="Add Conversion">
+									Add
+								</a>
+								<a th:if="${item.hasConversion}"
+								   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion})}"
+								   class="btn btn-info btn-sm"
+								   title="View Conversion">
+									View
+								</a>
+								<a th:if="${item.hasConversion}"
+								   th:href="@{/conversions/edit(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion})}"
+								   class="btn btn-warning btn-sm"
+								   title="Edit Conversion">
+									Edit
+								</a>
+							</div>
+						</td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(catalogs)}">
+						<td colspan="7" class="text-center">No catalog items found</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<script th:inline="javascript">
+		// Module-Campo mapping from server
+		const moduloCamposMap = /*[[${moduloCamposMap}]]*/ {};
+		const allCampos = /*[[${campos}]]*/ [];
+
+		// Get references to selects and form
+		const filterForm = document.getElementById('filterForm');
+		const moduloSelect = document.getElementById('moduloSelect');
+		const campoSelect = document.getElementById('campoSelect');
+		const sbsNoSelect = document.getElementById('sbsNoSelect');
+		const hasConversionSelect = document.getElementById('hasConversionSelect');
+
+		// Flag to prevent double submission
+		let isSubmitting = false;
+
+		// Function to update campo options based on selected modulo
+		function updateCampoOptions() {
+			const selectedModulo = moduloSelect.value;
+			const currentCampo = campoSelect.value;
+
+			// Clear current options except "All Fields"
+			campoSelect.innerHTML = '<option value="">All Fields</option>';
+
+			let camposToShow = [];
+
+			if (selectedModulo === '' || selectedModulo === null) {
+				// Show all campos sorted
+				camposToShow = allCampos;
+			} else {
+				// Show only campos for selected modulo
+				camposToShow = moduloCamposMap[selectedModulo] || [];
+			}
+
+			// Add options
+			camposToShow.forEach(campo => {
+				const option = document.createElement('option');
+				option.value = campo;
+				option.textContent = campo;
+				if (campo === currentCampo) {
+					option.selected = true;
+				}
+				campoSelect.appendChild(option);
+			});
+		}
+
+		// Function to auto-submit form
+		function autoSubmitForm() {
+			if (!isSubmitting) {
+				isSubmitting = true;
+				filterForm.submit();
+			}
+		}
+
+		// Add event listener to modulo select
+		moduloSelect.addEventListener('change', function() {
+			updateCampoOptions();
+			autoSubmitForm();
+		});
+
+		// Add event listeners to other filters for auto-submit
+		campoSelect.addEventListener('change', autoSubmitForm);
+		sbsNoSelect.addEventListener('change', autoSubmitForm);
+		hasConversionSelect.addEventListener('change', autoSubmitForm);
+
+		// Initialize on page load
+		updateCampoOptions();
+	</script>
+</div>
+</body>
+</html>

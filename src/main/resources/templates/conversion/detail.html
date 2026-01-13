@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::content})}">
+<head>
+	<title>Conversion Details</title>
+</head>
+<body>
+<div th:fragment="content">
+	<h1>Conversion Details</h1>
+
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">Conversion Information</h5>
+
+			<table class="table">
+				<tr>
+					<th>Catalog Source:</th>
+					<td>
+						<span class="badge bg-secondary" th:text="${conversion.catalogSource}"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>MODULO:</th>
+					<td th:text="${conversion.modulo}"></td>
+				</tr>
+				<tr>
+					<th>CAMPO:</th>
+					<td th:text="${conversion.campo}"></td>
+				</tr>
+				<tr>
+					<th>VALOR:</th>
+					<td th:text="${conversion.valor}"></td>
+				</tr>
+				<tr>
+					<th>CADENA (SBS_NO):</th>
+					<td>
+						<span th:text="${conversion.cadena}"></span>
+						<span class="badge bg-info ms-2" th:text="${conversion.cadenaDisplay}"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>Domain:</th>
+					<td th:text="${conversion.domain}"></td>
+				</tr>
+				<tr>
+					<th>Status:</th>
+					<td>
+						<div class="form-check">
+							<input type="checkbox"
+								   class="form-check-input"
+								   th:checked="${conversion.status != null && (conversion.status == 1 || conversion.status.toString() == '1')}"
+								   disabled
+								   readonly>
+							<label class="form-check-label">
+								<span th:text="${conversion.status != null && (conversion.status == 1 || conversion.status.toString() == '1') ? 'Active' : 'Inactive'}">Active</span>
+							</label>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h5 class="mt-4">Audit Trail</h5>
+			<table class="table">
+				<tr th:if="${conversion.createdAt != null}">
+					<th>Created At:</th>
+					<td th:text="${#temporals.format(conversion.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+				</tr>
+				<tr th:if="${conversion.createdBy != null}">
+					<th>Created By:</th>
+					<td th:text="${conversion.createdBy}"></td>
+				</tr>
+				<tr th:if="${conversion.modifiedAt != null}">
+					<th>Modified At:</th>
+					<td th:text="${#temporals.format(conversion.modifiedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+				</tr>
+				<tr th:if="${conversion.modifiedBy != null}">
+					<th>Modified By:</th>
+					<td th:text="${conversion.modifiedBy}"></td>
+				</tr>
+			</table>
+
+			<div class="mt-4">
+				<a th:href="@{/conversions/edit(modulo=${conversion.modulo},campo=${conversion.campo},valor=${conversion.valor},cadena=${conversion.cadena},returnModulo=${returnModulo},returnCampo=${returnCampo},returnSbsNo=${returnSbsNo},returnHasConversion=${returnHasConversion})}"
+				   class="btn btn-warning">Edit</a>
+
+				<form th:action="@{/conversions/delete}" method="post" style="display: inline;"
+					  onsubmit="return confirm('Are you sure you want to delete this conversion?');">
+					<input type="hidden" name="modulo" th:value="${conversion.modulo}">
+					<input type="hidden" name="campo" th:value="${conversion.campo}">
+					<input type="hidden" name="valor" th:value="${conversion.valor}">
+					<input type="hidden" name="cadena" th:value="${conversion.cadena}">
+					<input type="hidden" name="returnModulo" th:value="${returnModulo}">
+					<input type="hidden" name="returnCampo" th:value="${returnCampo}">
+					<input type="hidden" name="returnSbsNo" th:value="${returnSbsNo}">
+					<input type="hidden" name="returnHasConversion" th:value="${returnHasConversion}">
+					<button type="submit" class="btn btn-danger">Delete</button>
+				</form>
+
+				<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion})}" class="btn btn-secondary">Back to List</a>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

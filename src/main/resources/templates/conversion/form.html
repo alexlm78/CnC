@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::content})}">
+<head>
+	<title th:text="${isNew} ? 'Create Conversion' : 'Edit Conversion'">Conversion Form</title>
+</head>
+<body>
+<div th:fragment="content">
+	<h1 th:text="${isNew} ? 'Create Conversion' : 'Edit Conversion'">Conversion Form</h1>
+
+	<div class="card">
+		<div class="card-body">
+			<form th:action="${isNew} ? @{/conversions} : @{/conversions/update}"
+				  method="post"
+				  th:object="${conversion}"
+				  novalidate>
+
+				<div class="row mb-3">
+					<div class="col-md-3">
+						<label class="form-label">MODULO *</label>
+						<input type="text"
+							   class="form-control"
+							   th:field="*{modulo}"
+							   th:readonly="${!isNew}"
+							   th:classappend="${#fields.hasErrors('modulo')} ? 'is-invalid' : ''"
+							   maxlength="50"
+							   required>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('modulo')}"
+							 th:errors="*{modulo}"></div>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">CAMPO *</label>
+						<input type="text"
+							   class="form-control"
+							   th:field="*{campo}"
+							   th:readonly="${!isNew}"
+							   th:classappend="${#fields.hasErrors('campo')} ? 'is-invalid' : ''"
+							   maxlength="50"
+							   required>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('campo')}"
+							 th:errors="*{campo}"></div>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">VALOR *</label>
+						<input type="text"
+							   class="form-control"
+							   th:field="*{valor}"
+							   th:readonly="${!isNew}"
+							   th:classappend="${#fields.hasErrors('valor')} ? 'is-invalid' : ''"
+							   maxlength="50"
+							   required>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('valor')}"
+							 th:errors="*{valor}"></div>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">CADENA (SBS_NO) *</label>
+						<input type="number"
+							   class="form-control"
+							   th:field="*{cadena}"
+							   th:readonly="${!isNew}"
+							   th:classappend="${#fields.hasErrors('cadena')} ? 'is-invalid' : ''"
+							   required>
+						<small class="form-text text-muted" th:if="${!isNew}" th:text="${conversion.cadenaDisplay}"></small>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('cadena')}"
+							 th:errors="*{cadena}"></div>
+					</div>
+				</div>
+
+				<!-- Return filter parameters -->
+				<input type="hidden" name="returnModulo" th:value="${returnModulo}">
+				<input type="hidden" name="returnCampo" th:value="${returnCampo}">
+				<input type="hidden" name="returnSbsNo" th:value="${returnSbsNo}">
+				<input type="hidden" name="returnHasConversion" th:value="${returnHasConversion}">
+
+				<!-- Catalog Source - Always shown (read-only) -->
+				<div class="mb-3">
+					<label class="form-label">Catalog Source</label>
+					<div>
+						<span class="badge bg-secondary" th:text="${conversion.catalogSource}"></span>
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">Domain</label>
+					<input type="text"
+						   class="form-control"
+						   th:field="*{domain}"
+						   th:classappend="${#fields.hasErrors('domain')} ? 'is-invalid' : ''"
+						   maxlength="20"
+						   placeholder="Enter domain value">
+					<div class="invalid-feedback" th:if="${#fields.hasErrors('domain')}"
+						 th:errors="*{domain}"></div>
+				</div>
+
+				<div class="mb-3">
+					<div class="form-check">
+						<input type="checkbox"
+							   class="form-check-input"
+							   id="statusCheckbox"
+							   th:checked="${isNew || (conversion.status != null && (conversion.status == 1 || conversion.status.toString() == '1'))}"
+							   onchange="updateStatusValue()">
+						<label class="form-check-label" for="statusCheckbox">
+							Active
+						</label>
+						<input type="hidden" id="statusValue" name="status" value="">
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('status')}"
+							 th:errors="*{status}"></div>
+					</div>
+				</div>
+
+				<script>
+					function updateStatusValue() {
+						const checkbox = document.getElementById('statusCheckbox');
+						const hiddenInput = document.getElementById('statusValue');
+						hiddenInput.value = checkbox.checked ? '1' : '0';
+						console.log('Status updated to:', hiddenInput.value);
+					}
+
+					// Initialize on page load
+					document.addEventListener('DOMContentLoaded', function() {
+						updateStatusValue();
+					});
+				</script>
+
+				<div th:if="${!isNew && conversion.createdAt != null}" class="alert alert-info">
+					<strong>Audit Information:</strong><br>
+					Created: <span th:text="${#temporals.format(conversion.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+					by <span th:text="${conversion.createdBy}"></span><br>
+					<span th:if="${conversion.modifiedAt != null}">
+						Modified: <span th:text="${#temporals.format(conversion.modifiedAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+						by <span th:text="${conversion.modifiedBy}"></span>
+					</span>
+				</div>
+
+				<div class="btn-group">
+					<button type="submit" class="btn btn-primary">
+						<span th:text="${isNew} ? 'Create' : 'Update'">Submit</span>
+					</button>
+					<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion})}" class="btn btn-secondary">Cancel</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+</html>
