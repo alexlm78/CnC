@@ -94,7 +94,68 @@
 				<h5 class="card-title mb-0">
 					Catalog Items (<span th:text="${catalogPage.totalElements}">0</span>)
 				</h5>
-				<div class="d-flex align-items-center">
+				<div class="d-flex align-items-center gap-2">
+					<!-- Export Dropdown -->
+					<div class="dropdown">
+						<button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download me-1" viewBox="0 0 16 16">
+								<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+								<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+							</svg>
+							Export
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+							<li><h6 class="dropdown-header">Full Catalog</h6></li>
+							<li>
+								<a class="dropdown-item" th:href="@{/export-import/export/csv(modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filetype-csv me-2" viewBox="0 0 16 16">
+										<path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM3.517 14.841a1.13 1.13 0 0 0 .401.823c.13.108.289.192.478.252.19.061.411.091.665.091.338 0 .624-.053.859-.158.236-.105.416-.252.539-.44.125-.189.187-.408.187-.656 0-.224-.045-.41-.134-.56a1.001 1.001 0 0 0-.375-.357 2.027 2.027 0 0 0-.566-.21l-.621-.144a.97.97 0 0 1-.404-.176.37.37 0 0 1-.144-.299c0-.156.062-.284.185-.384.125-.101.296-.152.512-.152.143 0 .266.023.37.068a.624.624 0 0 1 .246.181.56.56 0 0 1 .12.258h.75a1.092 1.092 0 0 0-.2-.566 1.21 1.21 0 0 0-.5-.41 1.813 1.813 0 0 0-.78-.152c-.293 0-.551.05-.776.15-.225.099-.4.24-.527.421-.127.182-.19.395-.19.639 0 .201.04.376.122.524.082.149.2.27.352.367.152.095.332.167.539.213l.618.144c.207.049.361.113.463.193a.387.387 0 0 1 .152.326.505.505 0 0 1-.085.29.559.559 0 0 1-.255.193c-.111.047-.249.07-.413.07-.117 0-.223-.013-.32-.04a.838.838 0 0 1-.248-.115.578.578 0 0 1-.255-.384h-.765ZM.806 13.693c0-.248.034-.46.102-.633a.868.868 0 0 1 .302-.399.814.814 0 0 1 .475-.137c.15 0 .283.032.398.097a.7.7 0 0 1 .272.26.85.85 0 0 1 .12.381h.765v-.072a1.33 1.33 0 0 0-.466-.964 1.441 1.441 0 0 0-.489-.272 1.838 1.838 0 0 0-.606-.097c-.356 0-.66.074-.911.223-.25.148-.44.359-.572.632-.13.274-.196.6-.196.979v.498c0 .379.064.704.193.976.131.271.322.48.572.626.25.145.554.217.914.217.293 0 .554-.055.785-.164.23-.11.414-.26.55-.454a1.27 1.27 0 0 0 .226-.674v-.076h-.764a.799.799 0 0 1-.118.363.7.7 0 0 1-.272.25.874.874 0 0 1-.401.087.845.845 0 0 1-.478-.132.833.833 0 0 1-.299-.392 1.699 1.699 0 0 1-.102-.627v-.495Zm8.239 2.238h-.953l-1.338-3.999h.917l.896 3.138h.038l.888-3.138h.879l-1.327 4Z"/>
+									</svg>
+									Export to CSV
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item" th:href="@{/export-import/export/excel(modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-excel me-2" viewBox="0 0 16 16">
+										<path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"/>
+										<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+									</svg>
+									Export to Excel
+								</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li><h6 class="dropdown-header">Conversions Template</h6></li>
+							<li>
+								<a class="dropdown-item" th:href="@{/export-import/export/conversions/csv(modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filetype-csv me-2" viewBox="0 0 16 16">
+										<path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM3.517 14.841a1.13 1.13 0 0 0 .401.823c.13.108.289.192.478.252.19.061.411.091.665.091.338 0 .624-.053.859-.158.236-.105.416-.252.539-.44.125-.189.187-.408.187-.656 0-.224-.045-.41-.134-.56a1.001 1.001 0 0 0-.375-.357 2.027 2.027 0 0 0-.566-.21l-.621-.144a.97.97 0 0 1-.404-.176.37.37 0 0 1-.144-.299c0-.156.062-.284.185-.384.125-.101.296-.152.512-.152.143 0 .266.023.37.068a.624.624 0 0 1 .246.181.56.56 0 0 1 .12.258h.75a1.092 1.092 0 0 0-.2-.566 1.21 1.21 0 0 0-.5-.41 1.813 1.813 0 0 0-.78-.152c-.293 0-.551.05-.776.15-.225.099-.4.24-.527.421-.127.182-.19.395-.19.639 0 .201.04.376.122.524.082.149.2.27.352.367.152.095.332.167.539.213l.618.144c.207.049.361.113.463.193a.387.387 0 0 1 .152.326.505.505 0 0 1-.085.29.559.559 0 0 1-.255.193c-.111.047-.249.07-.413.07-.117 0-.223-.013-.32-.04a.838.838 0 0 1-.248-.115.578.578 0 0 1-.255-.384h-.765ZM.806 13.693c0-.248.034-.46.102-.633a.868.868 0 0 1 .302-.399.814.814 0 0 1 .475-.137c.15 0 .283.032.398.097a.7.7 0 0 1 .272.26.85.85 0 0 1 .12.381h.765v-.072a1.33 1.33 0 0 0-.466-.964 1.441 1.441 0 0 0-.489-.272 1.838 1.838 0 0 0-.606-.097c-.356 0-.66.074-.911.223-.25.148-.44.359-.572.632-.13.274-.196.6-.196.979v.498c0 .379.064.704.193.976.131.271.322.48.572.626.25.145.554.217.914.217.293 0 .554-.055.785-.164.23-.11.414-.26.55-.454a1.27 1.27 0 0 0 .226-.674v-.076h-.764a.799.799 0 0 1-.118.363.7.7 0 0 1-.272.25.874.874 0 0 1-.401.087.845.845 0 0 1-.478-.132.833.833 0 0 1-.299-.392 1.699 1.699 0 0 1-.102-.627v-.495Zm8.239 2.238h-.953l-1.338-3.999h.917l.896 3.138h.038l.888-3.138h.879l-1.327 4Z"/>
+									</svg>
+									CSV Template
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item" th:href="@{/export-import/export/conversions/excel(modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-excel me-2" viewBox="0 0 16 16">
+										<path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"/>
+										<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+									</svg>
+									Excel Template
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<!-- Import Button -->
+					<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload me-1" viewBox="0 0 16 16">
+							<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+							<path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+						</svg>
+						Import
+					</button>
+
+					<span class="border-start ps-2 ms-1"></span>
+
 					<label for="pageSizeSelect" class="me-2 mb-0">Records per page:</label>
 					<select id="pageSizeSelect" class="form-select form-select-sm" style="width: auto;" th:attr="data-current-size=${pageSize}">
 						<option value="10" th:selected="${pageSize == 10}">10</option>
@@ -102,6 +163,15 @@
 						<option value="50" th:selected="${pageSize == 50}">50</option>
 					</select>
 				</div>
+			</div>
+
+			<!-- Import Errors Alert -->
+			<div th:if="${importErrors != null && !importErrors.isEmpty()}" class="alert alert-warning alert-dismissible fade show" role="alert">
+				<strong>Import Warnings:</strong>
+				<ul class="mb-0 mt-2">
+					<li th:each="error : ${importErrors}" th:text="${error}"></li>
+				</ul>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
 
 			<div class="table-responsive">
@@ -352,6 +422,71 @@
 		// Initialize on page load
 		updateCampoOptions();
 	</script>
+
+	<!-- Import Modal -->
+	<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="importModalLabel">
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-upload me-2" viewBox="0 0 16 16">
+							<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+							<path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+						</svg>
+						Import Conversions
+					</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form th:action="@{/export-import/import}" method="post" enctype="multipart/form-data">
+					<div class="modal-body">
+						<div class="mb-3">
+							<label for="importFile" class="form-label">Select File (CSV or Excel)</label>
+							<input type="file" class="form-control" id="importFile" name="file" accept=".csv,.xlsx,.xls" required>
+							<div class="form-text">
+								Supported formats: CSV (.csv), Excel (.xlsx, .xls)
+							</div>
+						</div>
+
+						<div class="alert alert-info">
+							<strong>File Format:</strong>
+							<p class="mb-1 mt-2">The file must contain the following columns:</p>
+							<ol class="mb-0 ps-3">
+								<li><strong>Modulo</strong> - Module name (required)</li>
+								<li><strong>Campo</strong> - Field name (required)</li>
+								<li><strong>Valor</strong> - Value (required)</li>
+								<li><strong>Cadena</strong> - Chain/SBS_NO (required, 1 or 2)</li>
+								<li><strong>Domain</strong> - Domain value (optional)</li>
+								<li><strong>Status</strong> - Status (optional, default 1)</li>
+							</ol>
+							<hr>
+							<small>
+								<strong>Tip:</strong> Use "Export > Conversions Template" to download a template file with the correct format.
+							</small>
+						</div>
+
+						<!-- Hidden fields to preserve filters -->
+						<input type="hidden" name="returnModulo" th:value="${filter.modulo}">
+						<input type="hidden" name="returnCampo" th:value="${filter.campo}">
+						<input type="hidden" name="returnSbsNo" th:value="${filter.sbsNo}">
+						<input type="hidden" name="returnHasConversion" th:value="${filter.hasConversion}">
+						<input type="hidden" name="returnPage" th:value="${currentPage}">
+						<input type="hidden" name="returnSize" th:value="${pageSize}">
+						<input type="hidden" name="returnSearchTerm" th:value="${filter.searchTerm}">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-primary">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload me-1" viewBox="0 0 16 16">
+								<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+								<path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+							</svg>
+							Import
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 </body>
 </html>

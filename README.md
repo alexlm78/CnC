@@ -307,15 +307,15 @@ The application enforces the following validations:
 ## Future Enhancements
 
 - [x] **Pagination**: Implement pagination for large datasets to improve performance
-- [ ] **Export Functionality**: Export catalog and conversion data to CSV/Excel formats
+- [x] **Export Functionality**: Export catalog and conversion data to CSV/Excel formats
 - [ ] **Bulk Operations**: Mass create, update, or delete conversions
 - [ ] **Spring Security Integration**: Implement real user authentication and authorization
 - [ ] **REST API**: Provide REST endpoints for external system integration
-- [ ] **Advanced Search**: Full-text search capabilities across catalogs
+- [x] **Advanced Search**: Full-text search capabilities across catalogs
 - [ ] **Dashboard**: Statistics and analytics dashboard showing conversion coverage, usage patterns
 - [ ] **Business Rule Validation**: Additional domain-specific validation rules
 - [ ] **Audit History**: View complete history of changes for each conversion
-- [ ] **Import Functionality**: Bulk import conversions from CSV/Excel files
+- [x] **Import Functionality**: Bulk import conversions from CSV/Excel files
 
 ## Troubleshooting
 
