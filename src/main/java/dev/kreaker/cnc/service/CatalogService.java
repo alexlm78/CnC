@@ -55,11 +55,34 @@ public class CatalogService {
 					.collect(Collectors.toList());
 		}
 
+		// Apply text search filter
+		String searchTerm = filter.getSearchTermNormalized();
+		if (searchTerm != null && !searchTerm.isEmpty()) {
+			result = result.stream()
+					.filter(item -> matchesSearchTerm(item, searchTerm))
+					.collect(Collectors.toList());
+		}
+
 		result.sort(Comparator.comparing(CatalogItemDTO::getModulo, Comparator.nullsLast(Comparator.naturalOrder()))
 				.thenComparing(CatalogItemDTO::getCampo, Comparator.nullsLast(Comparator.naturalOrder()))
 				.thenComparing(CatalogItemDTO::getValor, Comparator.nullsLast(Comparator.naturalOrder())));
 
 		return result;
+	}
+
+	private boolean matchesSearchTerm(CatalogItemDTO item, String searchTerm) {
+		// Search in modulo, campo, valor, and descripcion (case-insensitive)
+		return containsIgnoreCase(item.getModulo(), searchTerm) ||
+				containsIgnoreCase(item.getCampo(), searchTerm) ||
+				containsIgnoreCase(item.getValor(), searchTerm) ||
+				containsIgnoreCase(item.getDescripcion(), searchTerm);
+	}
+
+	private boolean containsIgnoreCase(String text, String searchTerm) {
+		if (text == null) {
+			return false;
+		}
+		return text.toLowerCase().contains(searchTerm);
 	}
 
 	public Page<CatalogItemDTO> getUnifiedCatalogPage(CatalogFilterDTO filter, Pageable pageable) {

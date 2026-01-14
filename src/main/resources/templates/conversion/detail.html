@@ -79,7 +79,7 @@
 			</table>
 
 			<div class="mt-4">
-				<a th:href="@{/conversions/edit(modulo=${conversion.modulo},campo=${conversion.campo},valor=${conversion.valor},cadena=${conversion.cadena},returnModulo=${returnModulo},returnCampo=${returnCampo},returnSbsNo=${returnSbsNo},returnHasConversion=${returnHasConversion},returnPage=${returnPage},returnSize=${returnSize})}"
+				<a th:href="@{/conversions/edit(modulo=${conversion.modulo},campo=${conversion.campo},valor=${conversion.valor},cadena=${conversion.cadena},returnModulo=${returnModulo},returnCampo=${returnCampo},returnSbsNo=${returnSbsNo},returnHasConversion=${returnHasConversion},returnPage=${returnPage},returnSize=${returnSize},returnSearchTerm=${returnSearchTerm})}"
 				   class="btn btn-warning">Edit</a>
 
 				<form th:action="@{/conversions/delete}" method="post" style="display: inline;"
@@ -94,10 +94,11 @@
 					<input type="hidden" name="returnHasConversion" th:value="${returnHasConversion}">
 					<input type="hidden" name="returnPage" th:value="${returnPage}">
 					<input type="hidden" name="returnSize" th:value="${returnSize}">
+					<input type="hidden" name="returnSearchTerm" th:value="${returnSearchTerm}">
 					<button type="submit" class="btn btn-danger">Delete</button>
 				</form>
 
-				<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion},page=${returnPage},size=${returnSize})}" class="btn btn-secondary">Back to List</a>
+				<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion},page=${returnPage},size=${returnSize},searchTerm=${returnSearchTerm})}" class="btn btn-secondary">Back to List</a>
 			</div>
 		</div>
 	</div>

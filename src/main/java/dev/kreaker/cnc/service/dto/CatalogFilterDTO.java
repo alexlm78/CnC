@@ -15,9 +15,15 @@ public class CatalogFilterDTO {
 	private Integer sbsNo;
 	private CatalogSource source;
 	private Boolean hasConversion;
+	private String searchTerm;
 
 	public boolean hasAnyFilter() {
 		return modulo != null || campo != null || sbsNo != null ||
-				source != null || hasConversion != null;
+				source != null || hasConversion != null ||
+				(searchTerm != null && !searchTerm.trim().isEmpty());
+	}
+
+	public String getSearchTermNormalized() {
+		return searchTerm != null ? searchTerm.trim().toLowerCase() : null;
 	}
 }

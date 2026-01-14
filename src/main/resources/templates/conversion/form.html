@@ -72,6 +72,7 @@
 				<input type="hidden" name="returnHasConversion" th:value="${returnHasConversion}">
 				<input type="hidden" name="returnPage" th:value="${returnPage}">
 				<input type="hidden" name="returnSize" th:value="${returnSize}">
+				<input type="hidden" name="returnSearchTerm" th:value="${returnSearchTerm}">
 
 				<!-- Catalog Source - Always shown (read-only) -->
 				<div class="mb-3">
@@ -137,7 +138,7 @@
 					<button type="submit" class="btn btn-primary">
 						<span th:text="${isNew} ? 'Create' : 'Update'">Submit</span>
 					</button>
-					<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion},page=${returnPage},size=${returnSize})}" class="btn btn-secondary">Cancel</a>
+					<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion},page=${returnPage},size=${returnSize},searchTerm=${returnSearchTerm})}" class="btn btn-secondary">Cancel</a>
 				</div>
 			</form>
 		</div>

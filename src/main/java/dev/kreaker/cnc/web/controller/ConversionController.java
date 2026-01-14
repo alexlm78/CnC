@@ -36,6 +36,7 @@ public class ConversionController {
 			@RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
 			@RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
 			@RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			Model model) {
 
 		ConversionDTO dto = new ConversionDTO();
@@ -56,6 +57,7 @@ public class ConversionController {
 		model.addAttribute("returnHasConversion", returnHasConversion);
 		model.addAttribute("returnPage", returnPage);
 		model.addAttribute("returnSize", returnSize);
+		model.addAttribute("returnSearchTerm", returnSearchTerm);
 
 		return "conversion/form";
 	}
@@ -70,6 +72,7 @@ public class ConversionController {
 			@RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
 			@RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
 			@RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 
@@ -81,6 +84,7 @@ public class ConversionController {
 			model.addAttribute("returnHasConversion", returnHasConversion);
 			model.addAttribute("returnPage", returnPage);
 			model.addAttribute("returnSize", returnSize);
+			model.addAttribute("returnSearchTerm", returnSearchTerm);
 			return "conversion/form";
 		}
 
@@ -92,7 +96,7 @@ public class ConversionController {
 			redirectAttributes.addFlashAttribute("error", "Error creating conversion: " + e.getMessage());
 		}
 
-		return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize);
+		return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize, returnSearchTerm);
 	}
 
 	@GetMapping("/edit")
@@ -107,6 +111,7 @@ public class ConversionController {
 			@RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
 			@RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
 			@RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			Model model) {
 
 		ConversionDTO dto = conversionService.getConversion(modulo, campo, valor, cadena)
@@ -122,6 +127,7 @@ public class ConversionController {
 		model.addAttribute("returnHasConversion", returnHasConversion);
 		model.addAttribute("returnPage", returnPage);
 		model.addAttribute("returnSize", returnSize);
+		model.addAttribute("returnSearchTerm", returnSearchTerm);
 
 		return "conversion/form";
 	}
@@ -136,6 +142,7 @@ public class ConversionController {
 			@RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
 			@RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
 			@RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 
@@ -147,6 +154,7 @@ public class ConversionController {
 			model.addAttribute("returnHasConversion", returnHasConversion);
 			model.addAttribute("returnPage", returnPage);
 			model.addAttribute("returnSize", returnSize);
+			model.addAttribute("returnSearchTerm", returnSearchTerm);
 			return "conversion/form";
 		}
 
@@ -159,7 +167,7 @@ public class ConversionController {
 			redirectAttributes.addFlashAttribute("error", "Error updating conversion: " + e.getMessage());
 		}
 
-		return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize);
+		return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize, returnSearchTerm);
 	}
 
 	@PostMapping("/delete")
@@ -174,6 +182,7 @@ public class ConversionController {
 			@RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
 			@RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
 			@RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			RedirectAttributes redirectAttributes) {
 
 		try {
@@ -184,7 +193,7 @@ public class ConversionController {
 			redirectAttributes.addFlashAttribute("error", "Error deleting conversion: " + e.getMessage());
 		}
 
-		return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize);
+		return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize, returnSearchTerm);
 	}
 
 	@GetMapping("/view")
@@ -199,6 +208,7 @@ public class ConversionController {
 			@RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
 			@RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
 			@RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			Model model) {
 
 		ConversionDTO dto = conversionService.getConversion(modulo, campo, valor, cadena)
@@ -213,11 +223,12 @@ public class ConversionController {
 		model.addAttribute("returnHasConversion", returnHasConversion);
 		model.addAttribute("returnPage", returnPage);
 		model.addAttribute("returnSize", returnSize);
+		model.addAttribute("returnSearchTerm", returnSearchTerm);
 
 		return "conversion/detail";
 	}
 
-	private String buildRedirectUrl(String returnModulo, String returnCampo, Integer returnSbsNo, Boolean returnHasConversion, Integer returnPage, Integer returnSize) {
+	private String buildRedirectUrl(String returnModulo, String returnCampo, Integer returnSbsNo, Boolean returnHasConversion, Integer returnPage, Integer returnSize, String returnSearchTerm) {
 		StringBuilder url = new StringBuilder("redirect:/catalogs");
 		List<String> params = new ArrayList<>();
 
@@ -238,6 +249,9 @@ public class ConversionController {
 		}
 		if (returnSize != null) {
 			params.add("size=" + returnSize);
+		}
+		if (returnSearchTerm != null && !returnSearchTerm.isEmpty()) {
+			params.add("searchTerm=" + returnSearchTerm);
 		}
 
 		if (!params.isEmpty()) {

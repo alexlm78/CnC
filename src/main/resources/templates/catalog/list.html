@@ -9,7 +9,8 @@
 
 	<div class="filter-panel">
 		<form id="filterForm" th:action="@{/catalogs}" method="get" th:object="${filter}">
-			<div class="row g-3">
+			<!-- Filters Row with Search Button -->
+			<div class="row g-3 align-items-end">
 				<div class="col-md-3">
 					<label class="form-label">Module</label>
 					<select id="moduloSelect" class="form-select filter-select" th:field="*{modulo}">
@@ -44,7 +45,43 @@
 						<option value="false">No</option>
 					</select>
 				</div>
+				<div class="col-md-2 d-flex align-items-end">
+					<!-- Search Toggle Button -->
+					<button type="button" id="searchToggleBtn" class="btn btn-outline-primary"
+							th:classappend="${filter.searchTerm != null && !filter.searchTerm.isEmpty()} ? 'active' : ''"
+							title="Search">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+						</svg>
+						<span th:if="${filter.searchTerm != null && !filter.searchTerm.isEmpty()}" class="badge bg-primary ms-1">1</span>
+					</button>
+				</div>
 			</div>
+
+			<!-- Expandable Search Box -->
+			<div id="searchContainer" class="mt-3"
+				 th:style="${filter.searchTerm != null && !filter.searchTerm.isEmpty()} ? 'display: block;' : 'display: none;'">
+				<div class="input-group">
+					<span class="input-group-text bg-white">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+						</svg>
+					</span>
+					<input type="text"
+						   id="searchInput"
+						   class="form-control"
+						   th:field="*{searchTerm}"
+						   placeholder="Search in module, field, value, description..."
+						   autocomplete="off">
+					<button type="button" id="clearSearchBtn" class="btn btn-outline-secondary"
+							th:classappend="${filter.searchTerm == null || filter.searchTerm.isEmpty()} ? 'd-none' : ''">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+						</svg>
+					</button>
+				</div>
+			</div>
+
 			<div class="mt-3">
 				<a th:href="@{/catalogs}" class="btn btn-secondary">Clear Filters</a>
 			</div>
@@ -97,19 +134,19 @@
 						<td>
 							<div class="btn-group btn-group-sm" role="group">
 								<a th:if="${!item.hasConversion}"
-								   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize})}"
+								   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}"
 								   class="btn btn-primary btn-sm"
 								   title="Add Conversion">
 									Add
 								</a>
 								<a th:if="${item.hasConversion}"
-								   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize})}"
+								   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}"
 								   class="btn btn-info btn-sm"
 								   title="View Conversion">
 									View
 								</a>
 								<a th:if="${item.hasConversion}"
-								   th:href="@{/conversions/edit(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize})}"
+								   th:href="@{/conversions/edit(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}"
 								   class="btn btn-warning btn-sm"
 								   title="Edit Conversion">
 									Edit
@@ -138,14 +175,14 @@
 					<ul class="pagination mb-0">
 						<!-- First Page -->
 						<li class="page-item" th:classappend="${catalogPage.first} ? 'disabled'">
-							<a class="page-link" th:href="@{/catalogs(page=0,size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="First">
+							<a class="page-link" th:href="@{/catalogs(page=0,size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}" aria-label="First">
 								<span aria-hidden="true">&laquo;&laquo;</span>
 							</a>
 						</li>
 
 						<!-- Previous Page -->
 						<li class="page-item" th:classappend="${catalogPage.first} ? 'disabled'">
-							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.number - 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="Previous">
+							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.number - 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}" aria-label="Previous">
 								<span aria-hidden="true">&laquo;</span>
 							</a>
 						</li>
@@ -155,19 +192,19 @@
 							th:each="pageNum : ${#numbers.sequence(0, catalogPage.totalPages - 1)}"
 							th:if="${pageNum >= (catalogPage.number - 2) && pageNum <= (catalogPage.number + 2)}"
 							th:classappend="${pageNum == catalogPage.number} ? 'active'">
-							<a class="page-link" th:href="@{/catalogs(page=${pageNum},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" th:text="${pageNum + 1}">1</a>
+							<a class="page-link" th:href="@{/catalogs(page=${pageNum},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}" th:text="${pageNum + 1}">1</a>
 						</li>
 
 						<!-- Next Page -->
 						<li class="page-item" th:classappend="${catalogPage.last} ? 'disabled'">
-							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.number + 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="Next">
+							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.number + 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}" aria-label="Next">
 								<span aria-hidden="true">&raquo;</span>
 							</a>
 						</li>
 
 						<!-- Last Page -->
 						<li class="page-item" th:classappend="${catalogPage.last} ? 'disabled'">
-							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.totalPages - 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="Last">
+							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.totalPages - 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion},searchTerm=${filter.searchTerm})}" aria-label="Last">
 								<span aria-hidden="true">&raquo;&raquo;</span>
 							</a>
 						</li>
@@ -189,6 +226,10 @@
 		const sbsNoSelect = document.getElementById('sbsNoSelect');
 		const hasConversionSelect = document.getElementById('hasConversionSelect');
 		const pageSizeSelect = document.getElementById('pageSizeSelect');
+		const searchInput = document.getElementById('searchInput');
+		const clearSearchBtn = document.getElementById('clearSearchBtn');
+		const searchToggleBtn = document.getElementById('searchToggleBtn');
+		const searchContainer = document.getElementById('searchContainer');
 
 		// Current pagination state
 		const currentPage = /*[[${currentPage}]]*/ 0;
@@ -196,6 +237,12 @@
 
 		// Flag to prevent double submission
 		let isSubmitting = false;
+
+		// Debounce timer for search
+		let searchDebounceTimer = null;
+
+		// Search box visibility state
+		let searchVisible = searchContainer.style.display !== 'none';
 
 		// Function to update campo options based on selected modulo
 		function updateCampoOptions() {
@@ -253,6 +300,53 @@
 			currentUrl.searchParams.set('size', newSize);
 			currentUrl.searchParams.set('page', '0'); // Reset to first page when changing size
 			window.location.href = currentUrl.toString();
+		});
+
+		// Add event listener for search input with debounce
+		searchInput.addEventListener('input', function() {
+			// Show/hide clear button
+			if (searchInput.value.trim() !== '') {
+				clearSearchBtn.classList.remove('d-none');
+			} else {
+				clearSearchBtn.classList.add('d-none');
+			}
+
+			// Debounce search - wait 500ms after user stops typing
+			clearTimeout(searchDebounceTimer);
+			searchDebounceTimer = setTimeout(function() {
+				autoSubmitForm();
+			}, 500);
+		});
+
+		// Add event listener for Enter key in search input
+		searchInput.addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				clearTimeout(searchDebounceTimer);
+				autoSubmitForm();
+			}
+		});
+
+		// Add event listener for clear search button
+		clearSearchBtn.addEventListener('click', function() {
+			searchInput.value = '';
+			clearSearchBtn.classList.add('d-none');
+			searchToggleBtn.classList.remove('active');
+			// Remove badge
+			const badge = searchToggleBtn.querySelector('.badge');
+			if (badge) badge.remove();
+			autoSubmitForm();
+		});
+
+		// Add event listener for search toggle button
+		searchToggleBtn.addEventListener('click', function() {
+			searchVisible = !searchVisible;
+			if (searchVisible) {
+				searchContainer.style.display = 'block';
+				searchInput.focus();
+			} else {
+				searchContainer.style.display = 'none';
+			}
 		});
 
 		// Initialize on page load
