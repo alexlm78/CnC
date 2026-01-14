@@ -12,6 +12,9 @@ import dev.kreaker.cnc.service.dto.CatalogFilterDTO;
 import dev.kreaker.cnc.service.dto.CatalogItemDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -57,6 +60,24 @@ public class CatalogService {
 				.thenComparing(CatalogItemDTO::getValor, Comparator.nullsLast(Comparator.naturalOrder())));
 
 		return result;
+	}
+
+	public Page<CatalogItemDTO> getUnifiedCatalogPage(CatalogFilterDTO filter, Pageable pageable) {
+		// Get all catalogs with filters applied
+		List<CatalogItemDTO> allItems = getUnifiedCatalog(filter);
+
+		// Calculate pagination parameters
+		int totalElements = allItems.size();
+		int start = (int) pageable.getOffset();
+		int end = Math.min(start + pageable.getPageSize(), totalElements);
+
+		// Get the sublist for the current page
+		List<CatalogItemDTO> pageContent = start >= totalElements
+				? Collections.emptyList()
+				: allItems.subList(start, end);
+
+		// Return a Page object
+		return new PageImpl<>(pageContent, pageable, totalElements);
 	}
 
 	public Set<String> getDistinctModulos() {

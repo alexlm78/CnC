@@ -6,6 +6,9 @@ import dev.kreaker.cnc.service.dto.CatalogFilterDTO;
 import dev.kreaker.cnc.service.dto.CatalogItemDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,16 +30,22 @@ public class CatalogController {
 	@GetMapping
 	public String listCatalogs(
 			@ModelAttribute CatalogFilterDTO filter,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "size", defaultValue = "10") int size,
 			Model model) {
 
-		log.debug("Listing catalogs with filter: {}", filter);
+		log.debug("Listing catalogs with filter: {}, page: {}, size: {}", filter, page, size);
 
 		// Set default to GNC (1) if no filter is provided
 		if (filter.getSbsNo() == null) {
 			filter.setSbsNo(1);
 		}
 
-		List<CatalogItemDTO> catalogs = catalogService.getUnifiedCatalog(filter);
+		// Create Pageable object
+		Pageable pageable = PageRequest.of(page, size);
+
+		// Get paginated catalogs
+		Page<CatalogItemDTO> catalogPage = catalogService.getUnifiedCatalogPage(filter, pageable);
 
 		// Get sorted modulos and campos
 		List<String> modulos = catalogService.getDistinctModulos().stream()
@@ -47,12 +56,15 @@ public class CatalogController {
 				.sorted()
 				.collect(Collectors.toList());
 
-		model.addAttribute("catalogs", catalogs);
+		model.addAttribute("catalogPage", catalogPage);
+		model.addAttribute("catalogs", catalogPage.getContent());
 		model.addAttribute("filter", filter);
 		model.addAttribute("modulos", modulos);
 		model.addAttribute("campos", campos);
 		model.addAttribute("sbsNos", catalogService.getDistinctSbsNos());
 		model.addAttribute("moduloCamposMap", catalogService.getCamposByModulo());
+		model.addAttribute("currentPage", page);
+		model.addAttribute("pageSize", size);
 
 		return "catalog/list";
 	}

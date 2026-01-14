@@ -53,19 +53,31 @@
 
 	<div class="card">
 		<div class="card-body">
-			<h5 class="card-title">Catalog Items (<span th:text="${#lists.size(catalogs)}">0</span>)</h5>
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h5 class="card-title mb-0">
+					Catalog Items (<span th:text="${catalogPage.totalElements}">0</span>)
+				</h5>
+				<div class="d-flex align-items-center">
+					<label for="pageSizeSelect" class="me-2 mb-0">Records per page:</label>
+					<select id="pageSizeSelect" class="form-select form-select-sm" style="width: auto;" th:attr="data-current-size=${pageSize}">
+						<option value="10" th:selected="${pageSize == 10}">10</option>
+						<option value="25" th:selected="${pageSize == 25}">25</option>
+						<option value="50" th:selected="${pageSize == 50}">50</option>
+					</select>
+				</div>
+			</div>
 
 			<div class="table-responsive">
 				<table class="table table-striped table-hover">
 					<thead>
 					<tr>
-						<th>CADENA</th>
-						<th>Module</th>
+						<th>Cadena</th>
+						<th>Modulo</th>
 						<th>Campo</th>
 						<th>Valor</th>
-						<th>Description</th>
+						<th>Descripcion</th>
 						<th>Conversion</th>
-						<th>Actions</th>
+						<th>Actiones</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -85,19 +97,19 @@
 						<td>
 							<div class="btn-group btn-group-sm" role="group">
 								<a th:if="${!item.hasConversion}"
-								   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion})}"
+								   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize})}"
 								   class="btn btn-primary btn-sm"
 								   title="Add Conversion">
 									Add
 								</a>
 								<a th:if="${item.hasConversion}"
-								   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion})}"
+								   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize})}"
 								   class="btn btn-info btn-sm"
 								   title="View Conversion">
 									View
 								</a>
 								<a th:if="${item.hasConversion}"
-								   th:href="@{/conversions/edit(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion})}"
+								   th:href="@{/conversions/edit(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize})}"
 								   class="btn btn-warning btn-sm"
 								   title="Edit Conversion">
 									Edit
@@ -110,6 +122,57 @@
 					</tr>
 					</tbody>
 				</table>
+			</div>
+
+			<!-- Pagination Controls -->
+			<div class="d-flex justify-content-between align-items-center mt-3">
+				<div>
+					<span th:if="${catalogPage.totalElements > 0}">
+						Showing <span th:text="${catalogPage.number * catalogPage.size + 1}">1</span>
+						to <span th:text="${(catalogPage.number * catalogPage.size + catalogPage.numberOfElements)}">10</span>
+						of <span th:text="${catalogPage.totalElements}">100</span> records
+					</span>
+					<span th:if="${catalogPage.totalElements == 0}">No records found</span>
+				</div>
+				<nav th:if="${catalogPage.totalPages > 1}">
+					<ul class="pagination mb-0">
+						<!-- First Page -->
+						<li class="page-item" th:classappend="${catalogPage.first} ? 'disabled'">
+							<a class="page-link" th:href="@{/catalogs(page=0,size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="First">
+								<span aria-hidden="true">&laquo;&laquo;</span>
+							</a>
+						</li>
+
+						<!-- Previous Page -->
+						<li class="page-item" th:classappend="${catalogPage.first} ? 'disabled'">
+							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.number - 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+
+						<!-- Page Numbers -->
+						<li class="page-item"
+							th:each="pageNum : ${#numbers.sequence(0, catalogPage.totalPages - 1)}"
+							th:if="${pageNum >= (catalogPage.number - 2) && pageNum <= (catalogPage.number + 2)}"
+							th:classappend="${pageNum == catalogPage.number} ? 'active'">
+							<a class="page-link" th:href="@{/catalogs(page=${pageNum},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" th:text="${pageNum + 1}">1</a>
+						</li>
+
+						<!-- Next Page -->
+						<li class="page-item" th:classappend="${catalogPage.last} ? 'disabled'">
+							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.number + 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+
+						<!-- Last Page -->
+						<li class="page-item" th:classappend="${catalogPage.last} ? 'disabled'">
+							<a class="page-link" th:href="@{/catalogs(page=${catalogPage.totalPages - 1},size=${pageSize},modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo},hasConversion=${filter.hasConversion})}" aria-label="Last">
+								<span aria-hidden="true">&raquo;&raquo;</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>
@@ -125,6 +188,11 @@
 		const campoSelect = document.getElementById('campoSelect');
 		const sbsNoSelect = document.getElementById('sbsNoSelect');
 		const hasConversionSelect = document.getElementById('hasConversionSelect');
+		const pageSizeSelect = document.getElementById('pageSizeSelect');
+
+		// Current pagination state
+		const currentPage = /*[[${currentPage}]]*/ 0;
+		const currentSize = /*[[${pageSize}]]*/ 10;
 
 		// Flag to prevent double submission
 		let isSubmitting = false;
@@ -177,6 +245,15 @@
 		campoSelect.addEventListener('change', autoSubmitForm);
 		sbsNoSelect.addEventListener('change', autoSubmitForm);
 		hasConversionSelect.addEventListener('change', autoSubmitForm);
+
+		// Add event listener for page size change
+		pageSizeSelect.addEventListener('change', function() {
+			const newSize = pageSizeSelect.value;
+			const currentUrl = new URL(window.location.href);
+			currentUrl.searchParams.set('size', newSize);
+			currentUrl.searchParams.set('page', '0'); // Reset to first page when changing size
+			window.location.href = currentUrl.toString();
+		});
 
 		// Initialize on page load
 		updateCampoOptions();
