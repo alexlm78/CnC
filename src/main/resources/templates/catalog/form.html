@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::content})}">
+<head>
+	<title th:text="${isNew} ? 'Create Legacy Catalog' : 'Edit Legacy Catalog'">Legacy Catalog</title>
+</head>
+<body>
+<div th:fragment="content">
+	<h1 th:text="${isNew} ? 'Create Legacy Catalog' : 'Edit Legacy Catalog'">Legacy Catalog</h1>
+
+	<div class="card">
+		<div class="card-body">
+			<form th:action="${isNew} ? @{/catalogs/legacy} : @{/catalogs/legacy/{id}/update(id=${catalog.sourceId})}"
+				  method="post"
+				  th:object="${catalog}">
+
+				<div class="row mb-3">
+					<div class="col-md-3">
+						<label class="form-label">CADENA (SBS_NO) *</label>
+						<select class="form-select" th:field="*{sbsNo}" required>
+							<option th:value="1" th:selected="${catalog.sbsNo == 1}">GNC (1)</option>
+							<option th:value="2" th:selected="${catalog.sbsNo == 2}">Arca (2)</option>
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">MODULO *</label>
+						<input type="text"
+							   class="form-control"
+							   th:field="*{modulo}"
+							   maxlength="50"
+							   required>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">CAMPO *</label>
+						<input type="text"
+							   class="form-control"
+							   th:field="*{campo}"
+							   maxlength="50"
+							   required>
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">VALOR *</label>
+						<input type="text"
+							   class="form-control"
+							   th:field="*{valor}"
+							   maxlength="100"
+							   required>
+					</div>
+				</div>
+
+				<div class="row mb-3">
+					<div class="col-md-6">
+						<label class="form-label">DESCRIPCION</label>
+						<input type="text"
+							   class="form-control"
+							   th:field="*{descripcion}"
+							   maxlength="200">
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">ORDEN</label>
+						<input type="number"
+							   class="form-control"
+							   th:field="*{orden}">
+					</div>
+					<div class="col-md-3">
+						<label class="form-label">ACTIVO</label>
+						<select class="form-select" th:field="*{activo}">
+							<option th:value="1">Activo</option>
+							<option th:value="0">Inactivo</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="mt-3">
+					<button type="submit" class="btn btn-primary" th:text="${isNew} ? 'Create' : 'Update'">Save</button>
+					<a th:href="@{/catalogs}" class="btn btn-secondary">Back to List</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+

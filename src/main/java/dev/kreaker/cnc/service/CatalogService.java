@@ -17,14 +17,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
-public class CatalogService {
+	@RequiredArgsConstructor
+	public class CatalogService {
 
 	private final RvCatalogosRepository catalogosRepository;
 	private final RvRproCatalogoRepository rproCatalogoRepository;
@@ -181,6 +182,60 @@ public class CatalogService {
 		}
 	}
 
+	public CatalogItemDTO createLegacyCatalog(CatalogItemDTO dto) {
+		validateNotInRpro(dto.getModulo(), dto.getCampo(), dto.getValor(), dto.getSbsNo());
+
+		RvCatalogos entity = new RvCatalogos();
+		entity.setId(generateNextId());
+		entity.setSbsNo(Objects.requireNonNullElse(dto.getSbsNo(), 1));
+		entity.setModulo(dto.getModulo());
+		entity.setCampo(dto.getCampo());
+		entity.setValor(dto.getValor());
+		entity.setDescripcion(dto.getDescripcion());
+		entity.setOrden(dto.getOrden());
+		Integer activo = dto.getActivo() != null ? dto.getActivo() : 1;
+		entity.setActivo(activo);
+		entity.setCreadoPor("SYSTEM");
+		entity.setFechaCreacion(LocalDateTime.now());
+		entity.setModificadoPor(null);
+		entity.setFechaModificacion(null);
+		entity.setEstado(activo != null && activo == 1 ? "ACTIVO" : "INACTIVO");
+
+		RvCatalogos saved = catalogosRepository.save(entity);
+		return mapLegacyToDTO(saved);
+	}
+
+	public CatalogItemDTO updateLegacyCatalog(Long id, CatalogItemDTO dto) {
+		RvCatalogos existing = catalogosRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Legacy catalog not found with id " + id));
+
+		validateNotInRpro(existing.getModulo(), existing.getCampo(), existing.getValor(), existing.getSbsNo());
+
+		existing.setSbsNo(Objects.requireNonNullElse(dto.getSbsNo(), existing.getSbsNo()));
+		existing.setModulo(dto.getModulo());
+		existing.setCampo(dto.getCampo());
+		existing.setValor(dto.getValor());
+		existing.setDescripcion(dto.getDescripcion());
+		existing.setOrden(dto.getOrden());
+		Integer activo = dto.getActivo() != null ? dto.getActivo() : existing.getActivo();
+		existing.setActivo(activo);
+		existing.setModificadoPor("SYSTEM");
+		existing.setFechaModificacion(LocalDateTime.now());
+		existing.setEstado(activo != null && activo == 1 ? "ACTIVO" : "INACTIVO");
+
+		RvCatalogos saved = catalogosRepository.save(existing);
+		return mapLegacyToDTO(saved);
+	}
+
+	public void deleteLegacyCatalog(Long id) {
+		RvCatalogos existing = catalogosRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Legacy catalog not found with id " + id));
+
+		validateNotInRpro(existing.getModulo(), existing.getCampo(), existing.getValor(), existing.getSbsNo());
+
+		catalogosRepository.delete(existing);
+	}
+
 	private List<CatalogItemDTO> mapLegacyToDTO(List<RvCatalogos> entities) {
 		return entities.stream()
 				.map(this::mapLegacyToDTO)
@@ -249,5 +304,26 @@ public class CatalogService {
 				item.setHasConversion(false);
 			}
 		});
+	}
+
+	private Long generateNextId() {
+		return catalogosRepository.findAll().stream()
+				.map(RvCatalogos::getId)
+				.filter(Objects::nonNull)
+				.max(Long::compareTo)
+				.map(id -> id + 1)
+				.orElse(1L);
+	}
+
+	private void validateNotInRpro(String modulo, String campo, String valor, Integer sbsNo) {
+		boolean existsInRpro = rproCatalogoRepository.findAll().stream()
+				.anyMatch(c -> Objects.equals(c.getModulo(), modulo)
+						&& Objects.equals(c.getCampo(), campo)
+						&& Objects.equals(c.getValor(), valor)
+						&& Objects.equals(c.getSbsNo(), sbsNo));
+
+		if (existsInRpro) {
+			throw new IllegalStateException("Catalog item exists in RV_RPRO_CATALOGO and cannot be modified in RV_CATALOGOS");
+		}
 	}
 }

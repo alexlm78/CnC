@@ -164,6 +164,12 @@
 					</select>
 				</div>
 			</div>
+			<div class="d-flex justify-content-end mb-3" th:if="${catalogEditingEnabled}">
+				<a class="btn btn-success"
+				   th:href="@{/catalogs/legacy/new(modulo=${filter.modulo},campo=${filter.campo},sbsNo=${filter.sbsNo})}">
+					New Legacy Catalog
+				</a>
+			</div>
 
 			<!-- Import Errors Alert -->
 			<div th:if="${importErrors != null && !importErrors.isEmpty()}" class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -178,6 +184,7 @@
 				<table class="table table-striped table-hover">
 					<thead>
 					<tr>
+						<th th:if="${catalogEditingEnabled}"></th>
 						<th>Cadena</th>
 						<th>Modulo</th>
 						<th>Campo</th>
@@ -189,6 +196,24 @@
 					</thead>
 					<tbody>
 					<tr th:each="item : ${catalogs}">
+						<td th:if="${catalogEditingEnabled}">
+							<div th:if="${item.source == T(dev.kreaker.cnc.domain.model.CatalogSource).LEGACY}">
+								<a th:href="@{/catalogs/legacy/{id}/edit(id=${item.sourceId})}"
+								   class="catalog-edit-icon"
+								   title="Edit Catalog">
+									&#9998;
+								</a>
+								<form th:action="@{/catalogs/legacy/{id}/delete(id=${item.sourceId})}"
+									  method="post"
+									  class="d-inline">
+									<button type="submit"
+											class="catalog-edit-icon"
+											title="Delete Catalog">
+										&#10006;
+									</button>
+								</form>
+							</div>
+						</td>
 						<td th:text="${item.cadenaDisplay}"></td>
 						<td th:text="${item.modulo}"></td>
 						<td th:text="${item.campo}"></td>
@@ -225,6 +250,7 @@
 						</td>
 					</tr>
 					<tr th:if="${#lists.isEmpty(catalogs)}">
+						<td th:if="${catalogEditingEnabled}"></td>
 						<td colspan="7" class="text-center">No catalog items found</td>
 					</tr>
 					</tbody>
