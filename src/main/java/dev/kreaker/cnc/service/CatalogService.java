@@ -149,14 +149,14 @@ import java.util.stream.Collectors;
 		// Process legacy catalogs
 		catalogosRepository.findAll().forEach(cat -> {
 			if (cat.getModulo() != null && cat.getCampo() != null) {
-				tempMap.computeIfAbsent(cat.getModulo(), k -> new HashSet<>()).add(cat.getCampo());
+				tempMap.computeIfAbsent(cat.getModulo(), _ -> new HashSet<>()).add(cat.getCampo());
 			}
 		});
 
 		// Process RPRO catalogs
 		rproCatalogoRepository.findAll().forEach(cat -> {
 			if (cat.getModulo() != null && cat.getCampo() != null) {
-				tempMap.computeIfAbsent(cat.getModulo(), k -> new HashSet<>()).add(cat.getCampo());
+				tempMap.computeIfAbsent(cat.getModulo(), _ -> new HashSet<>()).add(cat.getCampo());
 			}
 		});
 
@@ -199,7 +199,7 @@ import java.util.stream.Collectors;
 		entity.setFechaCreacion(LocalDateTime.now());
 		entity.setModificadoPor(null);
 		entity.setFechaModificacion(null);
-		entity.setEstado(activo != null && activo == 1 ? "ACTIVO" : "INACTIVO");
+		entity.setEstado("PENDIENTE");
 
 		RvCatalogos saved = catalogosRepository.save(entity);
 		return mapLegacyToDTO(saved);
@@ -220,8 +220,8 @@ import java.util.stream.Collectors;
 		Integer activo = dto.getActivo() != null ? dto.getActivo() : existing.getActivo();
 		existing.setActivo(activo);
 		existing.setModificadoPor("SYSTEM");
-		existing.setFechaModificacion(LocalDateTime.now());
-		existing.setEstado(activo != null && activo == 1 ? "ACTIVO" : "INACTIVO");
+		existing.setFechaModificacion(LocalDateTime.now().withNano(0));
+		existing.setEstado("PENDIENTE");
 
 		RvCatalogos saved = catalogosRepository.save(existing);
 		return mapLegacyToDTO(saved);
