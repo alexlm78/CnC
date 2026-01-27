@@ -87,6 +87,7 @@ public class CatalogController {
 				));
 
 		model.addAttribute("item", item);
+		model.addAttribute("catalogEditingEnabled", catalogEditingEnabled);
 		return "catalog/detail";
 	}
 

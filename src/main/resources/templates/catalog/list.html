@@ -184,7 +184,8 @@
 				<table class="table table-striped table-hover">
 					<thead>
 					<tr>
-						<th th:if="${catalogEditingEnabled}"></th>
+						<th></th>
+						<th>Source</th>
 						<th>Cadena</th>
 						<th>Modulo</th>
 						<th>Campo</th>
@@ -196,8 +197,15 @@
 					</thead>
 					<tbody>
 					<tr th:each="item : ${catalogs}">
-						<td th:if="${catalogEditingEnabled}">
-							<div th:if="${item.source == T(dev.kreaker.cnc.domain.model.CatalogSource).LEGACY}">
+						<td>
+							<!-- View button for all catalogs -->
+							<a th:href="@{/catalogs/{source}/{id}(source=${item.source.name()},id=${item.sourceId})}"
+							   class="catalog-edit-icon"
+							   title="View Catalog Details">
+								&#128065;
+							</a>
+							<!-- Edit and Delete only for LEGACY when editing is enabled -->
+							<th:block th:if="${catalogEditingEnabled && item.source == T(dev.kreaker.cnc.domain.model.CatalogSource).LEGACY}">
 								<a th:href="@{/catalogs/legacy/{id}/edit(id=${item.sourceId})}"
 								   class="catalog-edit-icon"
 								   title="Edit Catalog">
@@ -212,7 +220,12 @@
 										&#10006;
 									</button>
 								</form>
-							</div>
+							</th:block>
+						</td>
+						<td>
+							<span class="badge"
+								  th:classappend="${item.source.name() == 'LEGACY'} ? 'bg-warning text-dark' : 'bg-info'"
+								  th:text="${item.sourceDisplay}">Source</span>
 						</td>
 						<td th:text="${item.cadenaDisplay}"></td>
 						<td th:text="${item.modulo}"></td>
@@ -250,8 +263,7 @@
 						</td>
 					</tr>
 					<tr th:if="${#lists.isEmpty(catalogs)}">
-						<td th:if="${catalogEditingEnabled}"></td>
-						<td colspan="7" class="text-center">No catalog items found</td>
+						<td colspan="9" class="text-center">No catalog items found</td>
 					</tr>
 					</tbody>
 				</table>

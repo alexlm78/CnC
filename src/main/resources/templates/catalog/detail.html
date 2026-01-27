@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::content})}">
+<head>
+	<title>Catalog Detail</title>
+</head>
+<body>
+<div th:fragment="content">
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<h1>Catalog Detail</h1>
+		<span class="badge"
+			  th:classappend="${item.source.name() == 'LEGACY'} ? 'bg-warning text-dark' : 'bg-info'"
+			  th:text="${item.sourceDisplay}">Source</span>
+	</div>
+
+	<div class="card">
+		<div class="card-header">
+			<div class="d-flex justify-content-between align-items-center">
+				<strong>
+					<span th:text="${item.source.name() == 'LEGACY'} ? 'P_ID: ' : 'RPRO_SID: '">ID:</span>
+					<span th:text="${item.sourceId}">123</span>
+				</strong>
+				<span class="badge bg-secondary" th:text="'Source: ' + ${item.source.tableName}">RV_CATALOGOS</span>
+			</div>
+		</div>
+		<div class="card-body">
+			<div class="row mb-3">
+				<div class="col-md-3">
+					<label class="form-label fw-bold">CADENA (SBS_NO)</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.cadenaDisplay} + ' (' + ${item.sbsNo} + ')'">GNC (1)</p>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label fw-bold">MODULO</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.modulo}">modulo</p>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label fw-bold">CAMPO</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.campo}">campo</p>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label fw-bold">VALOR</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.valor}">valor</p>
+				</div>
+			</div>
+
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<label class="form-label fw-bold">DESCRIPCION</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.descripcion} ?: '-'">descripcion</p>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label fw-bold">ORDEN</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.orden} ?: '-'">0</p>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label fw-bold">ACTIVO</label>
+					<p class="form-control-plaintext border rounded px-2">
+						<span th:if="${item.activo == 1}" class="badge bg-success">Activo</span>
+						<span th:if="${item.activo != 1}" class="badge bg-secondary">Inactivo</span>
+					</p>
+				</div>
+			</div>
+
+			<!-- RPRO specific field -->
+			<div class="row mb-3" th:if="${item.source.name() == 'RPRO' && item.padreSid != null}">
+				<div class="col-md-3">
+					<label class="form-label fw-bold">PADRE_SID</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.padreSid}">padre</p>
+				</div>
+			</div>
+
+			<!-- Conversion Info -->
+			<div class="row mb-3">
+				<div class="col-12">
+					<label class="form-label fw-bold">Conversion</label>
+					<div class="border rounded p-2">
+						<span th:if="${item.hasConversion}" class="badge bg-success me-2" th:text="${item.conversionDomain}">Domain</span>
+						<span th:if="${item.hasConversion}" class="text-muted">(Status: <span th:text="${item.conversionStatus}">1</span>)</span>
+						<span th:unless="${item.hasConversion}" class="badge bg-secondary">None</span>
+					</div>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="d-flex gap-2">
+				<a th:href="@{/catalogs}" class="btn btn-secondary">Back to List</a>
+
+				<!-- Edit button only for LEGACY when editing is enabled -->
+				<a th:if="${item.source.name() == 'LEGACY' && catalogEditingEnabled}"
+				   th:href="@{/catalogs/legacy/{id}/edit(id=${item.sourceId})}"
+				   class="btn btn-warning">
+					Edit
+				</a>
+
+				<!-- Conversion actions -->
+				<a th:if="${!item.hasConversion}"
+				   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo})}"
+				   class="btn btn-primary">
+					Add Conversion
+				</a>
+				<a th:if="${item.hasConversion}"
+				   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo})}"
+				   class="btn btn-info">
+					View Conversion
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

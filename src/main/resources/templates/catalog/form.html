@@ -8,6 +8,12 @@
 	<h1 th:text="${isNew} ? 'Create Legacy Catalog' : 'Edit Legacy Catalog'">Legacy Catalog</h1>
 
 	<div class="card">
+		<div class="card-header" th:if="${!isNew}">
+			<div class="d-flex justify-content-between align-items-center">
+				<strong>P_ID: <span th:text="${catalog.sourceId}">123</span></strong>
+				<span class="badge bg-warning text-dark">Legacy (RV_CATALOGOS)</span>
+			</div>
+		</div>
 		<div class="card-body">
 			<form th:action="${isNew} ? @{/catalogs/legacy} : @{/catalogs/legacy/{id}/update(id=${catalog.sourceId})}"
 				  method="post"
