@@ -17,10 +17,23 @@ public class ImportResultDTO {
 	private int created;
 	private int updated;
 	private int failed;
+	private int catalogsCreated;
+	private int catalogsUpdated;
+	private int conversionsCreated;
+	private int conversionsUpdated;
+	private int skippedConversions;
 	private List<String> errors = new ArrayList<>();
 
 	public int getTotal() {
 		return created + updated + failed;
+	}
+
+	public int getTotalCatalogs() {
+		return catalogsCreated + catalogsUpdated;
+	}
+
+	public int getTotalConversions() {
+		return conversionsCreated + conversionsUpdated;
 	}
 
 	public boolean hasErrors() {

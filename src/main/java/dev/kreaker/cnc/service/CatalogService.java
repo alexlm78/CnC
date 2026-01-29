@@ -326,4 +326,25 @@ import java.util.stream.Collectors;
 			throw new IllegalStateException("Catalog item exists in RV_RPRO_CATALOGO and cannot be modified in RV_CATALOGOS");
 		}
 	}
+
+	/**
+	 * Check if a catalog item exists in either LEGACY or RPRO
+	 */
+	public boolean catalogExists(String modulo, String campo, String valor, Integer sbsNo) {
+		boolean existsInLegacy = catalogosRepository.findAll().stream()
+				.anyMatch(c -> Objects.equals(c.getModulo(), modulo)
+						&& Objects.equals(c.getCampo(), campo)
+						&& Objects.equals(c.getValor(), valor)
+						&& Objects.equals(c.getSbsNo(), sbsNo));
+
+		if (existsInLegacy) {
+			return true;
+		}
+
+		return rproCatalogoRepository.findAll().stream()
+				.anyMatch(c -> Objects.equals(c.getModulo(), modulo)
+						&& Objects.equals(c.getCampo(), campo)
+						&& Objects.equals(c.getValor(), valor)
+						&& Objects.equals(c.getSbsNo(), sbsNo));
+	}
 }
