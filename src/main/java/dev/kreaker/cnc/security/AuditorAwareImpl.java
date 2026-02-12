@@ -1,6 +1,9 @@
 package dev.kreaker.cnc.security;
 
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -10,16 +13,10 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
 	@Override
 	public Optional<String> getCurrentAuditor() {
-		// TODO: Implement actual user retrieval from security context
-		// For now, return a default user
-		// In production, this should integrate with Spring Security
-
-		// Example with Spring Security:
-		// return Optional.ofNullable(SecurityContextHolder.getContext())
-		//     .map(SecurityContext::getAuthentication)
-		//     .filter(Authentication::isAuthenticated)
-		//     .map(Authentication::getName);
-
-		return Optional.of("SYSTEM");
+		return Optional.ofNullable(SecurityContextHolder.getContext())
+				.map(SecurityContext::getAuthentication)
+				.filter(Authentication::isAuthenticated)
+				.map(Authentication::getName)
+				.filter(name -> !"anonymousUser".equals(name));
 	}
 }

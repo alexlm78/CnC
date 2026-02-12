@@ -33,6 +33,19 @@
 					<a class="nav-link" href="/catalogs">Catalogs</a>
 				</li>
 			</ul>
+			<ul class="navbar-nav ms-auto" th:if="${currentUser}">
+				<li class="nav-item">
+					<a class="nav-link" th:href="@{/register}">Register User</a>
+				</li>
+				<li class="nav-item">
+					<span class="nav-link text-light" th:text="${currentUser}"></span>
+				</li>
+				<li class="nav-item">
+					<form th:action="@{/logout}" method="post" class="d-inline">
+						<button type="submit" class="btn btn-outline-light btn-sm my-1">Logout</button>
+					</form>
+				</li>
+			</ul>
 		</div>
 	</div>
 </nav>
