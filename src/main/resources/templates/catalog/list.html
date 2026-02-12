@@ -239,7 +239,7 @@
 					<tr th:each="item : ${catalogs}">
 						<td>
 							<!-- View button for all catalogs -->
-							<a th:href="@{/catalogs/{source}/{id}(source=${item.source.name()},id=${item.sourceId})}"
+							<a th:href="@{/catalogs/{source}/{id}(source=${item.source.name()},id=${item.sourceId},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}"
 							   class="catalog-edit-icon"
 							   title="View Catalog Details">
 								&#128065;

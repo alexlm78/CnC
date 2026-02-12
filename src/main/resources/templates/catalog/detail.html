@@ -83,7 +83,7 @@
 			<hr>
 
 			<div class="d-flex gap-2">
-				<a th:href="@{/catalogs}" class="btn btn-secondary">Back to List</a>
+				<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion},page=${returnPage},size=${returnSize},searchTerm=${returnSearchTerm})}" class="btn btn-secondary">Back to List</a>
 
 				<!-- Edit button only for LEGACY when editing is enabled -->
 				<a th:if="${item.source.name() == 'LEGACY' && catalogEditingEnabled}"

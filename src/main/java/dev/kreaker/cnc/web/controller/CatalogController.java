@@ -79,6 +79,13 @@ public class CatalogController {
 	public String viewCatalogItem(
 			@PathVariable("source") CatalogSource source,
 			@PathVariable("id") Long id,
+			@RequestParam(value = "returnModulo", required = false) String returnModulo,
+			@RequestParam(value = "returnCampo", required = false) String returnCampo,
+			@RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+			@RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
+			@RequestParam(value = "returnPage", required = false) Integer returnPage,
+			@RequestParam(value = "returnSize", required = false) Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			Model model) {
 
 		CatalogItemDTO item = catalogService.getCatalogItem(source, id)
@@ -88,6 +95,13 @@ public class CatalogController {
 
 		model.addAttribute("item", item);
 		model.addAttribute("catalogEditingEnabled", catalogEditingEnabled);
+		model.addAttribute("returnModulo", returnModulo);
+		model.addAttribute("returnCampo", returnCampo);
+		model.addAttribute("returnSbsNo", returnSbsNo);
+		model.addAttribute("returnHasConversion", returnHasConversion);
+		model.addAttribute("returnPage", returnPage);
+		model.addAttribute("returnSize", returnSize);
+		model.addAttribute("returnSearchTerm", returnSearchTerm);
 		return "catalog/detail";
 	}
 
