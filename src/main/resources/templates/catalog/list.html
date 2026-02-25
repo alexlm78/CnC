@@ -9,6 +9,7 @@
 
 	<div class="filter-panel">
 		<form id="filterForm" th:action="@{/catalogs}" method="get" th:object="${filter}">
+			<input type="hidden" name="size" th:value="${pageSize}">
 			<!-- Filters Row with Search Button -->
 			<div class="row g-3 align-items-end">
 				<div class="col-md-3">
@@ -246,14 +247,21 @@
 							</a>
 							<!-- Edit and Delete only for LEGACY when editing is enabled -->
 							<th:block th:if="${catalogEditingEnabled && item.source == T(dev.kreaker.cnc.domain.model.CatalogSource).LEGACY}">
-								<a th:href="@{/catalogs/legacy/{id}/edit(id=${item.sourceId})}"
+								<a th:href="@{/catalogs/legacy/{id}/edit(id=${item.sourceId},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}" 
 								   class="catalog-edit-icon"
 								   title="Edit Catalog">
 									&#9998;
 								</a>
-								<form th:action="@{/catalogs/legacy/{id}/delete(id=${item.sourceId})}"
+								<form th:action="@{/catalogs/legacy/{id}/delete(id=${item.sourceId})}" 
 									  method="post"
 									  class="d-inline">
+									<input type="hidden" name="returnModulo" th:value="${filter.modulo}">
+									<input type="hidden" name="returnCampo" th:value="${filter.campo}">
+									<input type="hidden" name="returnSbsNo" th:value="${filter.sbsNo}">
+									<input type="hidden" name="returnHasConversion" th:value="${filter.hasConversion}">
+									<input type="hidden" name="returnPage" th:value="${currentPage}">
+									<input type="hidden" name="returnSize" th:value="${pageSize}">
+									<input type="hidden" name="returnSearchTerm" th:value="${filter.searchTerm}">
 									<button type="submit"
 											class="catalog-edit-icon"
 											title="Delete Catalog">

@@ -76,6 +76,14 @@
 					</div>
 				</div>
 
+
+				<input type="hidden" name="returnModulo" th:value="${returnModulo}">
+				<input type="hidden" name="returnCampo" th:value="${returnCampo}">
+				<input type="hidden" name="returnSbsNo" th:value="${returnSbsNo}">
+				<input type="hidden" name="returnHasConversion" th:value="${returnHasConversion}">
+				<input type="hidden" name="returnPage" th:value="${returnPage}">
+				<input type="hidden" name="returnSize" th:value="${returnSize}">
+				<input type="hidden" name="returnSearchTerm" th:value="${returnSearchTerm}">
 				<div class="mt-3">
 					<button type="submit" class="btn btn-primary" th:text="${isNew} ? 'Create' : 'Update'">Save</button>
 					<a th:href="@{/catalogs}" class="btn btn-secondary">Back to List</a>

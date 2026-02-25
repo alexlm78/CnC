@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'dev.kreaker'
-version = '0.0.3a'
+version = '0.1.1'
 description = 'Catalogs & Convertions'
 
 java {

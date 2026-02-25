@@ -151,6 +151,13 @@ public class CatalogController {
 	@GetMapping("/legacy/{id}/edit")
 	public String showEditLegacyForm(
 			@PathVariable("id") Long id,
+			@RequestParam(value = "returnModulo", required = false) String returnModulo,
+			@RequestParam(value = "returnCampo", required = false) String returnCampo,
+			@RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+			@RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
+			@RequestParam(value = "returnPage", required = false) Integer returnPage,
+			@RequestParam(value = "returnSize", required = false) Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			Model model) {
 
 		if (!catalogEditingEnabled) {
@@ -164,6 +171,13 @@ public class CatalogController {
 
 		model.addAttribute("catalog", item);
 		model.addAttribute("isNew", false);
+		model.addAttribute("returnModulo", returnModulo);
+		model.addAttribute("returnCampo", returnCampo);
+		model.addAttribute("returnSbsNo", returnSbsNo);
+		model.addAttribute("returnHasConversion", returnHasConversion);
+		model.addAttribute("returnPage", returnPage);
+		model.addAttribute("returnSize", returnSize);
+		model.addAttribute("returnSearchTerm", returnSearchTerm);
 		return "catalog/form";
 	}
 
@@ -171,6 +185,13 @@ public class CatalogController {
 	public String updateLegacyCatalog(
 			@PathVariable("id") Long id,
 			@ModelAttribute("catalog") CatalogItemDTO dto,
+			@RequestParam(value = "returnModulo", required = false) String returnModulo,
+			@RequestParam(value = "returnCampo", required = false) String returnCampo,
+			@RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+			@RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
+			@RequestParam(value = "returnPage", required = false) Integer returnPage,
+			@RequestParam(value = "returnSize", required = false) Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			RedirectAttributes redirectAttributes) {
 
 		if (!catalogEditingEnabled) {
@@ -185,12 +206,19 @@ public class CatalogController {
 			redirectAttributes.addFlashAttribute("error", "Error updating catalog: " + e.getMessage());
 		}
 
-		return buildListRedirect(dto.getModulo(), dto.getCampo(), dto.getSbsNo());
+		return buildListRedirect(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize, returnSearchTerm);
 	}
 
 	@PostMapping("/legacy/{id}/delete")
 	public String deleteLegacyCatalog(
 			@PathVariable("id") Long id,
+			@RequestParam(value = "returnModulo", required = false) String returnModulo,
+			@RequestParam(value = "returnCampo", required = false) String returnCampo,
+			@RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+			@RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
+			@RequestParam(value = "returnPage", required = false) Integer returnPage,
+			@RequestParam(value = "returnSize", required = false) Integer returnSize,
+			@RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
 			RedirectAttributes redirectAttributes) {
 
 		if (!catalogEditingEnabled) {
@@ -205,16 +233,20 @@ public class CatalogController {
 
 			catalogService.deleteLegacyCatalog(id);
 			redirectAttributes.addFlashAttribute("success", "Catalog deleted successfully");
-
-			return buildListRedirect(item.getModulo(), item.getCampo(), item.getSbsNo());
 		} catch (Exception e) {
 			log.error("Error deleting legacy catalog", e);
 			redirectAttributes.addFlashAttribute("error", "Error deleting catalog: " + e.getMessage());
-			return "redirect:/catalogs";
 		}
+
+		return buildListRedirect(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage, returnSize, returnSearchTerm);
 	}
 
 	private String buildListRedirect(String modulo, String campo, Integer sbsNo) {
+		return buildListRedirect(modulo, campo, sbsNo, null, null, null, null);
+	}
+
+	private String buildListRedirect(String modulo, String campo, Integer sbsNo,
+			String hasConversion, Integer page, Integer size, String searchTerm) {
 		StringBuilder url = new StringBuilder("redirect:/catalogs");
 		boolean hasParam = false;
 
@@ -228,6 +260,22 @@ public class CatalogController {
 		}
 		if (sbsNo != null) {
 			url.append(hasParam ? "&" : "?").append("sbsNo=").append(sbsNo);
+			hasParam = true;
+		}
+		if (hasConversion != null && !hasConversion.isEmpty()) {
+			url.append(hasParam ? "&" : "?").append("hasConversion=").append(hasConversion);
+			hasParam = true;
+		}
+		if (page != null && page > 0) {
+			url.append(hasParam ? "&" : "?").append("page=").append(page);
+			hasParam = true;
+		}
+		if (size != null) {
+			url.append(hasParam ? "&" : "?").append("size=").append(size);
+			hasParam = true;
+		}
+		if (searchTerm != null && !searchTerm.isEmpty()) {
+			url.append(hasParam ? "&" : "?").append("searchTerm=").append(searchTerm);
 		}
 
 		return url.toString();
