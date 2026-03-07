@@ -158,11 +158,23 @@ public class CatalogService {
   }
 
   public Optional<CatalogItemDTO> getCatalogItem(CatalogSource source, Long id) {
+    Optional<CatalogItemDTO> item;
     if (source == CatalogSource.LEGACY) {
-      return catalogosRepository.findById(id).map(this::mapLegacyToDTO);
+      item = catalogosRepository.findById(id).map(this::mapLegacyToDTO);
     } else {
-      return rproCatalogoRepository.findById(id).map(this::mapRproToDTO);
+      item = rproCatalogoRepository.findById(id).map(this::mapRproToDTO);
     }
+    item.ifPresent(this::enrichSingleItemWithConversionData);
+    return item;
+  }
+
+  private void enrichSingleItemWithConversionData(CatalogItemDTO item) {
+    AlCatalogTwostepId key = item.getConversionKey();
+    conversionRepository.findById(key).ifPresent(conversion -> {
+      item.setHasConversion(true);
+      item.setConversionDomain(conversion.getDomain());
+      item.setConversionStatus(conversion.getStatus());
+    });
   }
 
   public CatalogItemDTO createLegacyCatalog(CatalogItemDTO dto) {

@@ -86,7 +86,7 @@
 				<input type="hidden" name="returnSearchTerm" th:value="${returnSearchTerm}">
 				<div class="mt-3">
 					<button type="submit" class="btn btn-primary" th:text="${isNew} ? 'Create' : 'Update'">Save</button>
-					<a th:href="@{/catalogs}" class="btn btn-secondary">Back to List</a>
+					<a th:href="@{/catalogs(modulo=${returnModulo},campo=${returnCampo},sbsNo=${returnSbsNo},hasConversion=${returnHasConversion},page=${returnPage},size=${returnSize},searchTerm=${returnSearchTerm})}" class="btn btn-secondary">Back to List</a>
 				</div>
 			</form>
 		</div>
