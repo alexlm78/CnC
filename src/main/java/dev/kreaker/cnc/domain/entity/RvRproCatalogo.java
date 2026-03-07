@@ -1,13 +1,15 @@
+/* (c) 2026 Alejandro Lopez Monzon <alejandro@kreaker.dev> for Kreaker Developments */
 package dev.kreaker.cnc.domain.entity;
+
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.Immutable;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Immutable;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "RV_RPRO_CATALOGO", schema = "REPORTUSER")
@@ -18,49 +20,49 @@ import java.time.LocalDateTime;
 @Immutable
 public class RvRproCatalogo {
 
-	@Id
-	@Column(name = "RPRO_SID")
-	private Long rproSid;
+  @Id
+  @Column(name = "RPRO_SID")
+  private Long rproSid;
 
-	@Column(name = "P_ID", nullable = false)
-	private Long pId;
+  @Column(name = "P_ID", nullable = false)
+  private Long pId;
 
-	@Column(name = "SBS_NO", nullable = false)
-	private Integer sbsNo;
+  @Column(name = "SBS_NO", nullable = false)
+  private Integer sbsNo;
 
-	@Column(name = "MODULO", nullable = false, length = 50)
-	private String modulo;
+  @Column(name = "MODULO", nullable = false, length = 50)
+  private String modulo;
 
-	@Column(name = "CAMPO", nullable = false, length = 50)
-	private String campo;
+  @Column(name = "CAMPO", nullable = false, length = 50)
+  private String campo;
 
-	@Column(name = "VALOR", nullable = false, length = 100)
-	private String valor;
+  @Column(name = "VALOR", nullable = false, length = 100)
+  private String valor;
 
-	@Column(name = "DESCRIPCION", length = 200)
-	private String descripcion;
+  @Column(name = "DESCRIPCION", length = 200)
+  private String descripcion;
 
-	@Column(name = "ACTIVO", nullable = false)
-	private Integer activo;
+  @Column(name = "ACTIVO", nullable = false)
+  private Integer activo;
 
-	@Column(name = "ORDEN")
-	private Integer orden;
+  @Column(name = "ORDEN")
+  private Integer orden;
 
-	@Column(name = "CREADO_POR", nullable = false, length = 30)
-	private String creadoPor;
+  @Column(name = "CREADO_POR", nullable = false, length = 30)
+  private String creadoPor;
 
-	@Column(name = "FECHA_CREACION", nullable = false)
-	private LocalDateTime fechaCreacion;
+  @Column(name = "FECHA_CREACION", nullable = false)
+  private LocalDateTime fechaCreacion;
 
-	@Column(name = "MODIFICADO_POR", length = 30)
-	private String modificadoPor;
+  @Column(name = "MODIFICADO_POR", length = 30)
+  private String modificadoPor;
 
-	@Column(name = "FECHA_MODIFICACION")
-	private LocalDateTime fechaModificacion;
+  @Column(name = "FECHA_MODIFICACION")
+  private LocalDateTime fechaModificacion;
 
-	@Column(name = "ESTADO", length = 100)
-	private String estado;
+  @Column(name = "ESTADO", length = 100)
+  private String estado;
 
-	@Column(name = "PADRE_SID")
-	private Long padreSid;
+  @Column(name = "PADRE_SID")
+  private Long padreSid;
 }

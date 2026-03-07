@@ -1,3 +1,4 @@
+/* (c) 2026 Alejandro Lopez Monzon <alejandro@kreaker.dev> for Kreaker Developments */
 package dev.kreaker.cnc.security.dto;
 
 import jakarta.validation.constraints.Email;
@@ -8,21 +9,21 @@ import lombok.Data;
 @Data
 public class RegisterDTO {
 
-	@NotBlank(message = "Username is required")
-	@Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
-	private String username;
+  @NotBlank(message = "Username is required")
+  @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+  private String username;
 
-	@NotBlank(message = "Email is required")
-	@Email(message = "Must be a valid email address")
-	private String email;
+  @NotBlank(message = "Email is required")
+  @Email(message = "Must be a valid email address")
+  private String email;
 
-	@NotBlank(message = "Password is required")
-	@Size(min = 6, max = 100, message = "Password must be at least 6 characters")
-	private String password;
+  @NotBlank(message = "Password is required")
+  @Size(min = 6, max = 100, message = "Password must be at least 6 characters")
+  private String password;
 
-	@NotBlank(message = "Password confirmation is required")
-	private String confirmPassword;
+  @NotBlank(message = "Password confirmation is required")
+  private String confirmPassword;
 
-	@Size(max = 100, message = "Display name must be at most 100 characters")
-	private String displayName;
+  @Size(max = 100, message = "Display name must be at most 100 characters")
+  private String displayName;
 }

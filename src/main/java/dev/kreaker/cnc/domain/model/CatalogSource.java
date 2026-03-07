@@ -1,16 +1,16 @@
+/* (c) 2026 Alejandro Lopez Monzon <alejandro@kreaker.dev> for Kreaker Developments */
 package dev.kreaker.cnc.domain.model;
 
 public enum CatalogSource {
-	LEGACY("RV_CATALOGOS"),
-	RPRO("RV_RPRO_CATALOGO");
+  LEGACY("RV_CATALOGOS"), RPRO("RV_RPRO_CATALOGO");
 
-	private final String tableName;
+  private final String tableName;
 
-	CatalogSource(String tableName) {
-		this.tableName = tableName;
-	}
+  CatalogSource(String tableName) {
+    this.tableName = tableName;
+  }
 
-	public String getTableName() {
-		return tableName;
-	}
+  public String getTableName() {
+    return tableName;
+  }
 }

@@ -1,10 +1,6 @@
+/* (c) 2026 Alejandro Lopez Monzon <alejandro@kreaker.dev> for Kreaker Developments */
 package dev.kreaker.cnc.web.controller;
 
-import dev.kreaker.cnc.security.dto.RegisterDTO;
-import dev.kreaker.cnc.security.model.CncUser;
-import dev.kreaker.cnc.security.repository.UserRepository;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,56 +10,59 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dev.kreaker.cnc.security.dto.RegisterDTO;
+import dev.kreaker.cnc.security.model.CncUser;
+import dev.kreaker.cnc.security.repository.UserRepository;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
 
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-	@GetMapping("/login")
-	public String loginPage() {
-		return "auth/login";
-	}
+  @GetMapping("/login")
+  public String loginPage() {
+    return "auth/login";
+  }
 
-	@GetMapping("/register")
-	public String registerPage(Model model) {
-		model.addAttribute("registerDTO", new RegisterDTO());
-		return "auth/register";
-	}
+  @GetMapping("/register")
+  public String registerPage(Model model) {
+    model.addAttribute("registerDTO", new RegisterDTO());
+    return "auth/register";
+  }
 
-	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute RegisterDTO registerDTO,
-						   BindingResult bindingResult,
-						   RedirectAttributes redirectAttributes) {
-		if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
-			bindingResult.rejectValue("confirmPassword", "error.confirmPassword", "Passwords do not match");
-		}
+  @PostMapping("/register")
+  public String register(@Valid @ModelAttribute RegisterDTO registerDTO,
+      BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
+      bindingResult.rejectValue("confirmPassword", "error.confirmPassword",
+          "Passwords do not match");
+    }
 
-		if (userRepository.existsByUsername(registerDTO.getUsername())) {
-			bindingResult.rejectValue("username", "error.username", "Username is already taken");
-		}
+    if (userRepository.existsByUsername(registerDTO.getUsername())) {
+      bindingResult.rejectValue("username", "error.username", "Username is already taken");
+    }
 
-		if (userRepository.existsByEmail(registerDTO.getEmail())) {
-			bindingResult.rejectValue("email", "error.email", "Email is already registered");
-		}
+    if (userRepository.existsByEmail(registerDTO.getEmail())) {
+      bindingResult.rejectValue("email", "error.email", "Email is already registered");
+    }
 
-		if (bindingResult.hasErrors()) {
-			return "auth/register";
-		}
+    if (bindingResult.hasErrors()) {
+      return "auth/register";
+    }
 
-		var user = CncUser.builder()
-				.username(registerDTO.getUsername())
-				.email(registerDTO.getEmail())
-				.password(passwordEncoder.encode(registerDTO.getPassword()))
-				.displayName(registerDTO.getDisplayName())
-				.enabled(true)
-				.build();
+    var user = CncUser.builder().username(registerDTO.getUsername()).email(registerDTO.getEmail())
+        .password(passwordEncoder.encode(registerDTO.getPassword()))
+        .displayName(registerDTO.getDisplayName()).enabled(true).build();
 
-		userRepository.save(user);
+    userRepository.save(user);
 
-		redirectAttributes.addFlashAttribute("success",
-				"User '" + user.getUsername() + "' registered successfully.");
-		return "redirect:/catalogs";
-	}
+    redirectAttributes.addFlashAttribute("success",
+        "User '" + user.getUsername() + "' registered successfully.");
+    return "redirect:/catalogs";
+  }
 }
