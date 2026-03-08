@@ -94,12 +94,12 @@
 
 				<!-- Conversion actions -->
 				<a th:if="${!item.hasConversion}"
-				   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo})}"
+				   th:href="@{/conversions/new(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${returnModulo},returnCampo=${returnCampo},returnSbsNo=${returnSbsNo},returnHasConversion=${returnHasConversion},returnPage=${returnPage},returnSize=${returnSize},returnSearchTerm=${returnSearchTerm})}"
 				   class="btn btn-primary">
 					Add Conversion
 				</a>
 				<a th:if="${item.hasConversion}"
-				   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo})}"
+				   th:href="@{/conversions/view(modulo=${item.modulo},campo=${item.campo},valor=${item.valor},cadena=${item.sbsNo},returnModulo=${returnModulo},returnCampo=${returnCampo},returnSbsNo=${returnSbsNo},returnHasConversion=${returnHasConversion},returnPage=${returnPage},returnSize=${returnSize},returnSearchTerm=${returnSearchTerm})}"
 				   class="btn btn-info">
 					View Conversion
 				</a>
