@@ -21,29 +21,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final CncUserDetailsService userDetailsService;
+   private final CncUserDetailsService userDetailsService;
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+   @Bean
+   public PasswordEncoder passwordEncoder() {
+      return new BCryptPasswordEncoder();
+   }
 
-  @Bean
-  public AuthenticationManager authenticationManager() {
-    DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-    provider.setPasswordEncoder(passwordEncoder());
-    return new ProviderManager(provider);
-  }
+   @Bean
+   public AuthenticationManager authenticationManager() {
+      DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+      provider.setPasswordEncoder(passwordEncoder());
+      return new ProviderManager(provider);
+   }
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(
-        auth -> auth.requestMatchers("/login", "/css/**", "/js/**", "/favicon.ico", "/error")
-            .permitAll().anyRequest().authenticated())
-        .formLogin(
-            form -> form.loginPage("/login").defaultSuccessUrl("/catalogs", true).permitAll())
-        .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout=true")
-            .permitAll());
-    return http.build();
-  }
+   @Bean
+   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+      http.authorizeHttpRequests(
+               auth -> auth.requestMatchers("/login", "/css/**", "/js/**", "/favicon.ico", "/error")
+                        .permitAll().anyRequest().authenticated())
+               .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/catalogs", true)
+                        .permitAll())
+               .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout=true")
+                        .permitAll());
+      return http.build();
+   }
 }

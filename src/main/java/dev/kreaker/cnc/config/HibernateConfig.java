@@ -21,55 +21,55 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class HibernateConfig {
 
-  @Primary
-  @Bean
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
-    LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-    em.setDataSource(dataSource);
-    em.setPackagesToScan("dev.kreaker.cnc.domain.entity");
+   @Primary
+   @Bean
+   public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
+      LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+      em.setDataSource(dataSource);
+      em.setPackagesToScan("dev.kreaker.cnc.domain.entity");
 
-    HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-    em.setJpaVendorAdapter(vendorAdapter);
+      HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+      em.setJpaVendorAdapter(vendorAdapter);
 
-    Properties properties = new Properties();
-    // Force Oracle 11g dialect (uses ROWNUM instead of FETCH FIRST)
-    properties.setProperty("hibernate.dialect", Oracle11gDialect.class.getName());
-    properties.setProperty("hibernate.hbm2ddl.auto", "none");
-    properties.setProperty("hibernate.show_sql", "true");
-    properties.setProperty("hibernate.format_sql", "true");
-    properties.setProperty("hibernate.default_schema", "REPORTUSER");
+      Properties properties = new Properties();
+      // Force Oracle 11g dialect (uses ROWNUM instead of FETCH FIRST)
+      properties.setProperty("hibernate.dialect", Oracle11gDialect.class.getName());
+      properties.setProperty("hibernate.hbm2ddl.auto", "none");
+      properties.setProperty("hibernate.show_sql", "true");
+      properties.setProperty("hibernate.format_sql", "true");
+      properties.setProperty("hibernate.default_schema", "REPORTUSER");
 
-    em.setJpaProperties(properties);
+      em.setJpaProperties(properties);
 
-    return em;
-  }
+      return em;
+   }
 
-  @Primary
-  @Bean
-  public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-    JpaTransactionManager transactionManager = new JpaTransactionManager();
-    transactionManager.setEntityManagerFactory(entityManagerFactory);
-    return transactionManager;
-  }
+   @Primary
+   @Bean
+   public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+      JpaTransactionManager transactionManager = new JpaTransactionManager();
+      transactionManager.setEntityManagerFactory(entityManagerFactory);
+      return transactionManager;
+   }
 
-  /**
-   * Custom Oracle 11g Dialect to force ROWNUM-based pagination
-   */
-  @Slf4j
-  public static class Oracle11gDialect extends OracleDialect {
-    public Oracle11gDialect() {
-      // Force Oracle 11g version (11.2)
-      super(DatabaseVersion.make(11, 2));
-      log.info("========================================");
-      log.info("CUSTOM ORACLE 11G DIALECT LOADED");
-      log.info("Version: {}", getVersion());
-      log.info("========================================");
-    }
+   /**
+    * Custom Oracle 11g Dialect to force ROWNUM-based pagination
+    */
+   @Slf4j
+   public static class Oracle11gDialect extends OracleDialect {
+      public Oracle11gDialect() {
+         // Force Oracle 11g version (11.2)
+         super(DatabaseVersion.make(11, 2));
+         log.info("========================================");
+         log.info("CUSTOM ORACLE 11G DIALECT LOADED");
+         log.info("Version: {}", getVersion());
+         log.info("========================================");
+      }
 
-    @Override
-    public DatabaseVersion getVersion() {
-      // Ensure version is always 11.2
-      return DatabaseVersion.make(11, 2);
-    }
-  }
+      @Override
+      public DatabaseVersion getVersion() {
+         // Ensure version is always 11.2
+         return DatabaseVersion.make(11, 2);
+      }
+   }
 }

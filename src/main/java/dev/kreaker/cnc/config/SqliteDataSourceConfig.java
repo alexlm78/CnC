@@ -12,17 +12,17 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @Configuration
 public class SqliteDataSourceConfig {
 
-  @Value("${cnc.sqlite.path:data/cnc-users.db}")
-  private String sqlitePath;
+   @Value("${cnc.sqlite.path:data/cnc-users.db}")
+   private String sqlitePath;
 
-  @Bean("sqliteJdbcTemplate")
-  public JdbcTemplate sqliteJdbcTemplate() {
-    Path dbPath = Path.of(sqlitePath);
-    dbPath.getParent().toFile().mkdirs();
+   @Bean("sqliteJdbcTemplate")
+   public JdbcTemplate sqliteJdbcTemplate() {
+      Path dbPath = Path.of(sqlitePath);
+      dbPath.getParent().toFile().mkdirs();
 
-    DriverManagerDataSource ds = new DriverManagerDataSource();
-    ds.setDriverClassName("org.sqlite.JDBC");
-    ds.setUrl("jdbc:sqlite:" + dbPath.toAbsolutePath());
-    return new JdbcTemplate(ds);
-  }
+      DriverManagerDataSource ds = new DriverManagerDataSource();
+      ds.setDriverClassName("org.sqlite.JDBC");
+      ds.setUrl("jdbc:sqlite:" + dbPath.toAbsolutePath());
+      return new JdbcTemplate(ds);
+   }
 }

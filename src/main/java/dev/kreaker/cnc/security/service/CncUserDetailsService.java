@@ -15,14 +15,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CncUserDetailsService implements UserDetailsService {
 
-  private final UserRepository userRepository;
+   private final UserRepository userRepository;
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    var cncUser = userRepository.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+   @Override
+   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+      var cncUser = userRepository.findByUsername(username)
+               .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-    return User.builder().username(cncUser.getUsername()).password(cncUser.getPassword())
-        .disabled(!cncUser.isEnabled()).authorities("ROLE_USER").build();
-  }
+      return User.builder().username(cncUser.getUsername()).password(cncUser.getPassword())
+               .disabled(!cncUser.isEnabled()).authorities("ROLE_USER").build();
+   }
 }

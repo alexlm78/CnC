@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class GlobalModelAdvice {
 
-  @ModelAttribute("currentUser")
-  public String currentUser() {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
-      return auth.getName();
-    }
-    return null;
-  }
+   @ModelAttribute("currentUser")
+   public String currentUser() {
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+         return auth.getName();
+      }
+      return null;
+   }
 }

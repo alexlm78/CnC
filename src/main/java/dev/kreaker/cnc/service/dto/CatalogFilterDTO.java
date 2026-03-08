@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CatalogFilterDTO {
 
-  private String modulo;
-  private String campo;
-  private Integer sbsNo;
-  private CatalogSource source;
-  private Boolean hasConversion;
-  private String searchTerm;
+   private String modulo;
+   private String campo;
+   private Integer sbsNo;
+   private CatalogSource source;
+   private Boolean hasConversion;
+   private String searchTerm;
 
-  public boolean hasAnyFilter() {
-    return modulo != null || campo != null || sbsNo != null || source != null
-        || hasConversion != null || (searchTerm != null && !searchTerm.trim().isEmpty());
-  }
+   public boolean hasAnyFilter() {
+      return modulo != null || campo != null || sbsNo != null || source != null
+               || hasConversion != null || (searchTerm != null && !searchTerm.trim().isEmpty());
+   }
 
-  public String getSearchTermNormalized() {
-    return searchTerm != null ? searchTerm.trim().toLowerCase() : null;
-  }
+   public String getSearchTermNormalized() {
+      return searchTerm != null ? searchTerm.trim().toLowerCase() : null;
+   }
 }

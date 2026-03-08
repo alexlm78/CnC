@@ -26,290 +26,302 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ExportImportController {
 
-  private final ExportImportService exportImportService;
+   private final ExportImportService exportImportService;
 
-  private static final DateTimeFormatter FILE_DATE_FORMAT =
-      DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+   private static final DateTimeFormatter FILE_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
-  /**
-   * Export catalog to CSV
-   */
-  @GetMapping("/export/csv")
-  public ResponseEntity<byte[]> exportToCsv(@ModelAttribute CatalogFilterDTO filter) {
-    try {
-      byte[] data = exportImportService.exportToCsv(filter);
-      String filename = "catalog_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".csv";
+   /**
+    * Export catalog to CSV
+    */
+   @GetMapping("/export/csv")
+   public ResponseEntity<byte[]> exportToCsv(@ModelAttribute CatalogFilterDTO filter) {
+      try {
+         byte[] data = exportImportService.exportToCsv(filter);
+         String filename = "catalog_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".csv";
 
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-          .contentType(MediaType.parseMediaType("text/csv")).body(data);
+         return ResponseEntity.ok()
+                  .header(HttpHeaders.CONTENT_DISPOSITION,
+                           "attachment; filename=\"" + filename + "\"")
+                  .contentType(MediaType.parseMediaType("text/csv")).body(data);
 
-    } catch (IOException e) {
-      log.error("Error exporting to CSV", e);
-      return ResponseEntity.internalServerError().build();
-    }
-  }
+      } catch (IOException e) {
+         log.error("Error exporting to CSV", e);
+         return ResponseEntity.internalServerError().build();
+      }
+   }
 
-  /**
-   * Export catalog to Excel
-   */
-  @GetMapping("/export/excel")
-  public ResponseEntity<byte[]> exportToExcel(@ModelAttribute CatalogFilterDTO filter) {
-    try {
-      byte[] data = exportImportService.exportToExcel(filter);
-      String filename = "catalog_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".xlsx";
+   /**
+    * Export catalog to Excel
+    */
+   @GetMapping("/export/excel")
+   public ResponseEntity<byte[]> exportToExcel(@ModelAttribute CatalogFilterDTO filter) {
+      try {
+         byte[] data = exportImportService.exportToExcel(filter);
+         String filename = "catalog_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".xlsx";
 
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-          .contentType(MediaType
-              .parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-          .body(data);
+         return ResponseEntity.ok()
+                  .header(HttpHeaders.CONTENT_DISPOSITION,
+                           "attachment; filename=\"" + filename + "\"")
+                  .contentType(MediaType.parseMediaType(
+                           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                  .body(data);
 
-    } catch (IOException e) {
-      log.error("Error exporting to Excel", e);
-      return ResponseEntity.internalServerError().build();
-    }
-  }
+      } catch (IOException e) {
+         log.error("Error exporting to Excel", e);
+         return ResponseEntity.internalServerError().build();
+      }
+   }
 
-  /**
-   * Export conversions template to CSV (for import)
-   */
-  @GetMapping("/export/conversions/csv")
-  public ResponseEntity<byte[]> exportConversionsToCsv(@ModelAttribute CatalogFilterDTO filter) {
-    try {
-      byte[] data = exportImportService.exportConversionsToCsv(filter);
-      String filename =
-          "conversions_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".csv";
+   /**
+    * Export conversions template to CSV (for import)
+    */
+   @GetMapping("/export/conversions/csv")
+   public ResponseEntity<byte[]> exportConversionsToCsv(@ModelAttribute CatalogFilterDTO filter) {
+      try {
+         byte[] data = exportImportService.exportConversionsToCsv(filter);
+         String filename =
+                  "conversions_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".csv";
 
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-          .contentType(MediaType.parseMediaType("text/csv")).body(data);
+         return ResponseEntity.ok()
+                  .header(HttpHeaders.CONTENT_DISPOSITION,
+                           "attachment; filename=\"" + filename + "\"")
+                  .contentType(MediaType.parseMediaType("text/csv")).body(data);
 
-    } catch (IOException e) {
-      log.error("Error exporting conversions to CSV", e);
-      return ResponseEntity.internalServerError().build();
-    }
-  }
+      } catch (IOException e) {
+         log.error("Error exporting conversions to CSV", e);
+         return ResponseEntity.internalServerError().build();
+      }
+   }
 
-  /**
-   * Export conversions template to Excel (for import)
-   */
-  @GetMapping("/export/conversions/excel")
-  public ResponseEntity<byte[]> exportConversionsToExcel(@ModelAttribute CatalogFilterDTO filter) {
-    try {
-      byte[] data = exportImportService.exportConversionsToExcel(filter);
-      String filename =
-          "conversions_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".xlsx";
+   /**
+    * Export conversions template to Excel (for import)
+    */
+   @GetMapping("/export/conversions/excel")
+   public ResponseEntity<byte[]> exportConversionsToExcel(@ModelAttribute CatalogFilterDTO filter) {
+      try {
+         byte[] data = exportImportService.exportConversionsToExcel(filter);
+         String filename =
+                  "conversions_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".xlsx";
 
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-          .contentType(MediaType
-              .parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-          .body(data);
+         return ResponseEntity.ok()
+                  .header(HttpHeaders.CONTENT_DISPOSITION,
+                           "attachment; filename=\"" + filename + "\"")
+                  .contentType(MediaType.parseMediaType(
+                           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                  .body(data);
 
-    } catch (IOException e) {
-      log.error("Error exporting conversions to Excel", e);
-      return ResponseEntity.internalServerError().build();
-    }
-  }
+      } catch (IOException e) {
+         log.error("Error exporting conversions to Excel", e);
+         return ResponseEntity.internalServerError().build();
+      }
+   }
 
-  /**
-   * Export catalog import template to CSV
-   */
-  @GetMapping("/export/catalogs/template/csv")
-  public ResponseEntity<byte[]> exportCatalogTemplateToCsv() {
-    try {
-      byte[] data = exportImportService.exportCatalogImportTemplateToCsv();
-      String filename =
-          "catalog_import_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".csv";
+   /**
+    * Export catalog import template to CSV
+    */
+   @GetMapping("/export/catalogs/template/csv")
+   public ResponseEntity<byte[]> exportCatalogTemplateToCsv() {
+      try {
+         byte[] data = exportImportService.exportCatalogImportTemplateToCsv();
+         String filename = "catalog_import_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT)
+                  + ".csv";
 
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-          .contentType(MediaType.parseMediaType("text/csv")).body(data);
+         return ResponseEntity.ok()
+                  .header(HttpHeaders.CONTENT_DISPOSITION,
+                           "attachment; filename=\"" + filename + "\"")
+                  .contentType(MediaType.parseMediaType("text/csv")).body(data);
 
-    } catch (IOException e) {
-      log.error("Error exporting catalog template to CSV", e);
-      return ResponseEntity.internalServerError().build();
-    }
-  }
+      } catch (IOException e) {
+         log.error("Error exporting catalog template to CSV", e);
+         return ResponseEntity.internalServerError().build();
+      }
+   }
 
-  /**
-   * Export catalog import template to Excel
-   */
-  @GetMapping("/export/catalogs/template/excel")
-  public ResponseEntity<byte[]> exportCatalogTemplateToExcel() {
-    try {
-      byte[] data = exportImportService.exportCatalogImportTemplateToExcel();
-      String filename =
-          "catalog_import_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT) + ".xlsx";
+   /**
+    * Export catalog import template to Excel
+    */
+   @GetMapping("/export/catalogs/template/excel")
+   public ResponseEntity<byte[]> exportCatalogTemplateToExcel() {
+      try {
+         byte[] data = exportImportService.exportCatalogImportTemplateToExcel();
+         String filename = "catalog_import_template_" + LocalDateTime.now().format(FILE_DATE_FORMAT)
+                  + ".xlsx";
 
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-          .contentType(MediaType
-              .parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-          .body(data);
+         return ResponseEntity.ok()
+                  .header(HttpHeaders.CONTENT_DISPOSITION,
+                           "attachment; filename=\"" + filename + "\"")
+                  .contentType(MediaType.parseMediaType(
+                           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                  .body(data);
 
-    } catch (IOException e) {
-      log.error("Error exporting catalog template to Excel", e);
-      return ResponseEntity.internalServerError().build();
-    }
-  }
+      } catch (IOException e) {
+         log.error("Error exporting catalog template to Excel", e);
+         return ResponseEntity.internalServerError().build();
+      }
+   }
 
-  /**
-   * Import conversions from file (CSV or Excel)
-   */
-  @PostMapping("/import")
-  public String importConversions(@RequestParam("file") MultipartFile file,
-      @RequestParam(value = "returnModulo", required = false) String returnModulo,
-      @RequestParam(value = "returnCampo", required = false) String returnCampo,
-      @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
-      @RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
-      @RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
-      @RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
-      @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
-      RedirectAttributes redirectAttributes) {
+   /**
+    * Import conversions from file (CSV or Excel)
+    */
+   @PostMapping("/import")
+   public String importConversions(@RequestParam("file") MultipartFile file,
+            @RequestParam(value = "returnModulo", required = false) String returnModulo,
+            @RequestParam(value = "returnCampo", required = false) String returnCampo,
+            @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+            @RequestParam(value = "returnHasConversion",
+                     required = false) Boolean returnHasConversion,
+            @RequestParam(value = "returnPage", required = false,
+                     defaultValue = "0") Integer returnPage,
+            @RequestParam(value = "returnSize", required = false,
+                     defaultValue = "10") Integer returnSize,
+            @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
+            RedirectAttributes redirectAttributes) {
 
-    if (file.isEmpty()) {
-      redirectAttributes.addFlashAttribute("error", "Please select a file to import");
+      if (file.isEmpty()) {
+         redirectAttributes.addFlashAttribute("error", "Please select a file to import");
+         return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+                  returnPage, returnSize, returnSearchTerm);
+      }
+
+      String filename = file.getOriginalFilename();
+      if (filename == null) {
+         redirectAttributes.addFlashAttribute("error", "Invalid file");
+         return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+                  returnPage, returnSize, returnSearchTerm);
+      }
+
+      try {
+         ImportResultDTO result;
+
+         if (filename.endsWith(".csv")) {
+            result = exportImportService.importFromCsv(file);
+         } else if (filename.endsWith(".xlsx") || filename.endsWith(".xls")) {
+            result = exportImportService.importFromExcel(file);
+         } else {
+            redirectAttributes.addFlashAttribute("error",
+                     "Unsupported file format. Please use CSV or Excel (.xlsx)");
+            return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+                     returnPage, returnSize, returnSearchTerm);
+         }
+
+         if (result.isSuccess()) {
+            redirectAttributes.addFlashAttribute("success", result.getMessage());
+         } else {
+            redirectAttributes.addFlashAttribute("warning", result.getMessage());
+         }
+
+         if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("importErrors", result.getErrors());
+         }
+
+      } catch (Exception e) {
+         log.error("Error importing file", e);
+         redirectAttributes.addFlashAttribute("error", "Error importing file: " + e.getMessage());
+      }
+
       return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-          returnPage, returnSize, returnSearchTerm);
-    }
+               returnPage, returnSize, returnSearchTerm);
+   }
 
-    String filename = file.getOriginalFilename();
-    if (filename == null) {
-      redirectAttributes.addFlashAttribute("error", "Invalid file");
+   /**
+    * Import catalogs (with optional conversions) from file (CSV or Excel)
+    */
+   @PostMapping("/import/catalogs")
+   public String importCatalogs(@RequestParam("file") MultipartFile file,
+            @RequestParam(value = "returnModulo", required = false) String returnModulo,
+            @RequestParam(value = "returnCampo", required = false) String returnCampo,
+            @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+            @RequestParam(value = "returnHasConversion",
+                     required = false) Boolean returnHasConversion,
+            @RequestParam(value = "returnPage", required = false,
+                     defaultValue = "0") Integer returnPage,
+            @RequestParam(value = "returnSize", required = false,
+                     defaultValue = "10") Integer returnSize,
+            @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
+            RedirectAttributes redirectAttributes) {
+
+      if (file.isEmpty()) {
+         redirectAttributes.addFlashAttribute("error", "Please select a file to import");
+         return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+                  returnPage, returnSize, returnSearchTerm);
+      }
+
+      String filename = file.getOriginalFilename();
+      if (filename == null) {
+         redirectAttributes.addFlashAttribute("error", "Invalid file");
+         return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+                  returnPage, returnSize, returnSearchTerm);
+      }
+
+      try {
+         ImportResultDTO result;
+
+         if (filename.endsWith(".csv")) {
+            result = exportImportService.importCatalogsFromCsv(file);
+         } else if (filename.endsWith(".xlsx") || filename.endsWith(".xls")) {
+            result = exportImportService.importCatalogsFromExcel(file);
+         } else {
+            redirectAttributes.addFlashAttribute("error",
+                     "Unsupported file format. Please use CSV or Excel (.xlsx)");
+            return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+                     returnPage, returnSize, returnSearchTerm);
+         }
+
+         if (result.isSuccess()) {
+            redirectAttributes.addFlashAttribute("success", result.getMessage());
+         } else {
+            redirectAttributes.addFlashAttribute("warning", result.getMessage());
+         }
+
+         if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("importErrors", result.getErrors());
+         }
+
+      } catch (Exception e) {
+         log.error("Error importing catalogs file", e);
+         redirectAttributes.addFlashAttribute("error", "Error importing file: " + e.getMessage());
+      }
+
       return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-          returnPage, returnSize, returnSearchTerm);
-    }
+               returnPage, returnSize, returnSearchTerm);
+   }
 
-    try {
-      ImportResultDTO result;
+   /**
+    * Build redirect URL preserving filters
+    */
+   private String buildRedirectUrl(String returnModulo, String returnCampo, Integer returnSbsNo,
+            Boolean returnHasConversion, Integer returnPage, Integer returnSize,
+            String returnSearchTerm) {
+      StringBuilder url = new StringBuilder("redirect:/catalogs");
+      java.util.List<String> params = new java.util.ArrayList<>();
 
-      if (filename.endsWith(".csv")) {
-        result = exportImportService.importFromCsv(file);
-      } else if (filename.endsWith(".xlsx") || filename.endsWith(".xls")) {
-        result = exportImportService.importFromExcel(file);
-      } else {
-        redirectAttributes.addFlashAttribute("error",
-            "Unsupported file format. Please use CSV or Excel (.xlsx)");
-        return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-            returnPage, returnSize, returnSearchTerm);
+      if (returnModulo != null && !returnModulo.isEmpty()) {
+         params.add("modulo=" + returnModulo);
+      }
+      if (returnCampo != null && !returnCampo.isEmpty()) {
+         params.add("campo=" + returnCampo);
+      }
+      if (returnSbsNo != null) {
+         params.add("sbsNo=" + returnSbsNo);
+      }
+      if (returnHasConversion != null) {
+         params.add("hasConversion=" + returnHasConversion);
+      }
+      if (returnPage != null) {
+         params.add("page=" + returnPage);
+      }
+      if (returnSize != null) {
+         params.add("size=" + returnSize);
+      }
+      if (returnSearchTerm != null && !returnSearchTerm.isEmpty()) {
+         params.add("searchTerm=" + returnSearchTerm);
       }
 
-      if (result.isSuccess()) {
-        redirectAttributes.addFlashAttribute("success", result.getMessage());
-      } else {
-        redirectAttributes.addFlashAttribute("warning", result.getMessage());
+      if (!params.isEmpty()) {
+         url.append("?").append(String.join("&", params));
       }
 
-      if (result.hasErrors()) {
-        redirectAttributes.addFlashAttribute("importErrors", result.getErrors());
-      }
-
-    } catch (Exception e) {
-      log.error("Error importing file", e);
-      redirectAttributes.addFlashAttribute("error", "Error importing file: " + e.getMessage());
-    }
-
-    return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage,
-        returnSize, returnSearchTerm);
-  }
-
-  /**
-   * Import catalogs (with optional conversions) from file (CSV or Excel)
-   */
-  @PostMapping("/import/catalogs")
-  public String importCatalogs(@RequestParam("file") MultipartFile file,
-      @RequestParam(value = "returnModulo", required = false) String returnModulo,
-      @RequestParam(value = "returnCampo", required = false) String returnCampo,
-      @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
-      @RequestParam(value = "returnHasConversion", required = false) Boolean returnHasConversion,
-      @RequestParam(value = "returnPage", required = false, defaultValue = "0") Integer returnPage,
-      @RequestParam(value = "returnSize", required = false, defaultValue = "10") Integer returnSize,
-      @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
-      RedirectAttributes redirectAttributes) {
-
-    if (file.isEmpty()) {
-      redirectAttributes.addFlashAttribute("error", "Please select a file to import");
-      return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-          returnPage, returnSize, returnSearchTerm);
-    }
-
-    String filename = file.getOriginalFilename();
-    if (filename == null) {
-      redirectAttributes.addFlashAttribute("error", "Invalid file");
-      return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-          returnPage, returnSize, returnSearchTerm);
-    }
-
-    try {
-      ImportResultDTO result;
-
-      if (filename.endsWith(".csv")) {
-        result = exportImportService.importCatalogsFromCsv(file);
-      } else if (filename.endsWith(".xlsx") || filename.endsWith(".xls")) {
-        result = exportImportService.importCatalogsFromExcel(file);
-      } else {
-        redirectAttributes.addFlashAttribute("error",
-            "Unsupported file format. Please use CSV or Excel (.xlsx)");
-        return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-            returnPage, returnSize, returnSearchTerm);
-      }
-
-      if (result.isSuccess()) {
-        redirectAttributes.addFlashAttribute("success", result.getMessage());
-      } else {
-        redirectAttributes.addFlashAttribute("warning", result.getMessage());
-      }
-
-      if (result.hasErrors()) {
-        redirectAttributes.addFlashAttribute("importErrors", result.getErrors());
-      }
-
-    } catch (Exception e) {
-      log.error("Error importing catalogs file", e);
-      redirectAttributes.addFlashAttribute("error", "Error importing file: " + e.getMessage());
-    }
-
-    return buildRedirectUrl(returnModulo, returnCampo, returnSbsNo, returnHasConversion, returnPage,
-        returnSize, returnSearchTerm);
-  }
-
-  /**
-   * Build redirect URL preserving filters
-   */
-  private String buildRedirectUrl(String returnModulo, String returnCampo, Integer returnSbsNo,
-      Boolean returnHasConversion, Integer returnPage, Integer returnSize,
-      String returnSearchTerm) {
-    StringBuilder url = new StringBuilder("redirect:/catalogs");
-    java.util.List<String> params = new java.util.ArrayList<>();
-
-    if (returnModulo != null && !returnModulo.isEmpty()) {
-      params.add("modulo=" + returnModulo);
-    }
-    if (returnCampo != null && !returnCampo.isEmpty()) {
-      params.add("campo=" + returnCampo);
-    }
-    if (returnSbsNo != null) {
-      params.add("sbsNo=" + returnSbsNo);
-    }
-    if (returnHasConversion != null) {
-      params.add("hasConversion=" + returnHasConversion);
-    }
-    if (returnPage != null) {
-      params.add("page=" + returnPage);
-    }
-    if (returnSize != null) {
-      params.add("size=" + returnSize);
-    }
-    if (returnSearchTerm != null && !returnSearchTerm.isEmpty()) {
-      params.add("searchTerm=" + returnSearchTerm);
-    }
-
-    if (!params.isEmpty()) {
-      url.append("?").append(String.join("&", params));
-    }
-
-    return url.toString();
-  }
+      return url.toString();
+   }
 }

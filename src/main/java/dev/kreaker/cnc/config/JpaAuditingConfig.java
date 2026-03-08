@@ -16,13 +16,13 @@ import dev.kreaker.cnc.security.AuditorAwareImpl;
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider", dateTimeProviderRef = "dateTimeProvider")
 public class JpaAuditingConfig {
 
-  @Bean
-  public AuditorAware<String> auditorProvider() {
-    return new AuditorAwareImpl();
-  }
+   @Bean
+   public AuditorAware<String> auditorProvider() {
+      return new AuditorAwareImpl();
+   }
 
-  @Bean
-  public DateTimeProvider dateTimeProvider() {
-    return () -> Optional.of(LocalDateTime.now());
-  }
+   @Bean
+   public DateTimeProvider dateTimeProvider() {
+      return () -> Optional.of(LocalDateTime.now());
+   }
 }

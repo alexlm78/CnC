@@ -12,19 +12,19 @@ import dev.kreaker.cnc.domain.entity.AlCatalogTwostepId;
 
 @Repository
 public interface AlCatalogTwostepRepository
-    extends JpaRepository<AlCatalogTwostep, AlCatalogTwostepId> {
+         extends JpaRepository<AlCatalogTwostep, AlCatalogTwostepId> {
 
-  List<AlCatalogTwostep> findById_Modulo(String modulo);
+   List<AlCatalogTwostep> findById_Modulo(String modulo);
 
-  List<AlCatalogTwostep> findById_Campo(String campo);
+   List<AlCatalogTwostep> findById_Campo(String campo);
 
-  Optional<AlCatalogTwostep> findById_ModuloAndId_CampoAndId_ValorAndId_Cadena(String modulo,
-      String campo, String valor, Integer cadena);
+   Optional<AlCatalogTwostep> findById_ModuloAndId_CampoAndId_ValorAndId_Cadena(String modulo,
+            String campo, String valor, Integer cadena);
 
-  boolean existsById_ModuloAndId_CampoAndId_ValorAndId_Cadena(String modulo, String campo,
-      String valor, Integer cadena);
+   boolean existsById_ModuloAndId_CampoAndId_ValorAndId_Cadena(String modulo, String campo,
+            String valor, Integer cadena);
 
-  List<AlCatalogTwostep> findById_Cadena(Integer cadena);
+   List<AlCatalogTwostep> findById_Cadena(Integer cadena);
 
-  List<AlCatalogTwostep> findByStatus(Integer status);
+   List<AlCatalogTwostep> findByStatus(Integer status);
 }

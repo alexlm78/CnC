@@ -35,238 +35,244 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CatalogController {
 
-  private final CatalogService catalogService;
+   private final CatalogService catalogService;
 
-  @Value("${cnc.catalog.editing.enabled:true}")
-  private boolean catalogEditingEnabled;
+   @Value("${cnc.catalog.editing.enabled:true}")
+   private boolean catalogEditingEnabled;
 
-  @GetMapping
-  public String listCatalogs(@ModelAttribute CatalogFilterDTO filter,
-      @RequestParam(value = "page", defaultValue = "0") int page,
-      @RequestParam(value = "size", defaultValue = "10") int size, Model model) {
+   @GetMapping
+   public String listCatalogs(@ModelAttribute CatalogFilterDTO filter,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size, Model model) {
 
-    log.debug("Listing catalogs with filter: {}, page: {}, size: {}", filter, page, size);
+      log.debug("Listing catalogs with filter: {}, page: {}, size: {}", filter, page, size);
 
-    if (filter.getSbsNo() == null) {
-      filter.setSbsNo(1);
-    }
+      if (filter.getSbsNo() == null) {
+         filter.setSbsNo(1);
+      }
 
-    Pageable pageable = PageRequest.of(page, size);
-    Page<CatalogItemDTO> catalogPage = catalogService.getUnifiedCatalogPage(filter, pageable);
+      Pageable pageable = PageRequest.of(page, size);
+      Page<CatalogItemDTO> catalogPage = catalogService.getUnifiedCatalogPage(filter, pageable);
 
-    List<String> modulos =
-        catalogService.getDistinctModulos().stream().sorted().collect(Collectors.toList());
+      List<String> modulos =
+               catalogService.getDistinctModulos().stream().sorted().collect(Collectors.toList());
 
-    List<String> campos =
-        catalogService.getDistinctCampos().stream().sorted().collect(Collectors.toList());
+      List<String> campos =
+               catalogService.getDistinctCampos().stream().sorted().collect(Collectors.toList());
 
-    model.addAttribute("catalogPage", catalogPage);
-    model.addAttribute("catalogs", catalogPage.getContent());
-    model.addAttribute("filter", filter);
-    model.addAttribute("modulos", modulos);
-    model.addAttribute("campos", campos);
-    model.addAttribute("sbsNos", catalogService.getDistinctSbsNos());
-    model.addAttribute("moduloCamposMap", catalogService.getCamposByModulo());
-    model.addAttribute("currentPage", page);
-    model.addAttribute("pageSize", size);
-    model.addAttribute("catalogEditingEnabled", catalogEditingEnabled);
+      model.addAttribute("catalogPage", catalogPage);
+      model.addAttribute("catalogs", catalogPage.getContent());
+      model.addAttribute("filter", filter);
+      model.addAttribute("modulos", modulos);
+      model.addAttribute("campos", campos);
+      model.addAttribute("sbsNos", catalogService.getDistinctSbsNos());
+      model.addAttribute("moduloCamposMap", catalogService.getCamposByModulo());
+      model.addAttribute("currentPage", page);
+      model.addAttribute("pageSize", size);
+      model.addAttribute("catalogEditingEnabled", catalogEditingEnabled);
 
-    return "catalog/list";
-  }
+      return "catalog/list";
+   }
 
-  @GetMapping("/{source}/{id}")
-  public String viewCatalogItem(@PathVariable("source") CatalogSource source,
-      @PathVariable("id") Long id,
-      @RequestParam(value = "returnModulo", required = false) String returnModulo,
-      @RequestParam(value = "returnCampo", required = false) String returnCampo,
-      @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
-      @RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
-      @RequestParam(value = "returnPage", required = false) Integer returnPage,
-      @RequestParam(value = "returnSize", required = false) Integer returnSize,
-      @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
-      Model model) {
+   @GetMapping("/{source}/{id}")
+   public String viewCatalogItem(@PathVariable("source") CatalogSource source,
+            @PathVariable("id") Long id,
+            @RequestParam(value = "returnModulo", required = false) String returnModulo,
+            @RequestParam(value = "returnCampo", required = false) String returnCampo,
+            @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+            @RequestParam(value = "returnHasConversion",
+                     required = false) String returnHasConversion,
+            @RequestParam(value = "returnPage", required = false) Integer returnPage,
+            @RequestParam(value = "returnSize", required = false) Integer returnSize,
+            @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
+            Model model) {
 
-    CatalogItemDTO item = catalogService.getCatalogItem(source, id).orElseThrow(
-        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog item not found"));
+      CatalogItemDTO item = catalogService.getCatalogItem(source, id).orElseThrow(
+               () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog item not found"));
 
-    model.addAttribute("item", item);
-    model.addAttribute("catalogEditingEnabled", catalogEditingEnabled);
-    model.addAttribute("returnModulo", returnModulo);
-    model.addAttribute("returnCampo", returnCampo);
-    model.addAttribute("returnSbsNo", returnSbsNo);
-    model.addAttribute("returnHasConversion", returnHasConversion);
-    model.addAttribute("returnPage", returnPage);
-    model.addAttribute("returnSize", returnSize);
-    model.addAttribute("returnSearchTerm", returnSearchTerm);
-    return "catalog/detail";
-  }
+      model.addAttribute("item", item);
+      model.addAttribute("catalogEditingEnabled", catalogEditingEnabled);
+      model.addAttribute("returnModulo", returnModulo);
+      model.addAttribute("returnCampo", returnCampo);
+      model.addAttribute("returnSbsNo", returnSbsNo);
+      model.addAttribute("returnHasConversion", returnHasConversion);
+      model.addAttribute("returnPage", returnPage);
+      model.addAttribute("returnSize", returnSize);
+      model.addAttribute("returnSearchTerm", returnSearchTerm);
+      return "catalog/detail";
+   }
 
-  @GetMapping("/legacy/new")
-  public String showCreateLegacyForm(
-      @RequestParam(value = "modulo", required = false) String modulo,
-      @RequestParam(value = "campo", required = false) String campo,
-      @RequestParam(value = "sbsNo", required = false) Integer sbsNo, Model model) {
+   @GetMapping("/legacy/new")
+   public String showCreateLegacyForm(
+            @RequestParam(value = "modulo", required = false) String modulo,
+            @RequestParam(value = "campo", required = false) String campo,
+            @RequestParam(value = "sbsNo", required = false) Integer sbsNo, Model model) {
 
-    if (!catalogEditingEnabled) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
-    }
+      if (!catalogEditingEnabled) {
+         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
+      }
 
-    CatalogItemDTO dto = new CatalogItemDTO();
-    dto.setSource(CatalogSource.LEGACY);
-    dto.setSbsNo(Objects.requireNonNullElse(sbsNo, 1));
-    dto.setModulo(modulo);
-    dto.setCampo(campo);
-    dto.setActivo(1);
+      CatalogItemDTO dto = new CatalogItemDTO();
+      dto.setSource(CatalogSource.LEGACY);
+      dto.setSbsNo(Objects.requireNonNullElse(sbsNo, 1));
+      dto.setModulo(modulo);
+      dto.setCampo(campo);
+      dto.setActivo(1);
 
-    model.addAttribute("catalog", dto);
-    model.addAttribute("isNew", true);
-    return "catalog/form";
-  }
+      model.addAttribute("catalog", dto);
+      model.addAttribute("isNew", true);
+      return "catalog/form";
+   }
 
-  @PostMapping("/legacy")
-  public String createLegacyCatalog(@ModelAttribute("catalog") CatalogItemDTO dto,
-      RedirectAttributes redirectAttributes) {
+   @PostMapping("/legacy")
+   public String createLegacyCatalog(@ModelAttribute("catalog") CatalogItemDTO dto,
+            RedirectAttributes redirectAttributes) {
 
-    if (!catalogEditingEnabled) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
-    }
+      if (!catalogEditingEnabled) {
+         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
+      }
 
-    try {
-      catalogService.createLegacyCatalog(dto);
-      redirectAttributes.addFlashAttribute("success", "Catalog created successfully");
-    } catch (Exception e) {
-      log.error("Error creating legacy catalog", e);
-      redirectAttributes.addFlashAttribute("error", "Error creating catalog: " + e.getMessage());
-    }
+      try {
+         catalogService.createLegacyCatalog(dto);
+         redirectAttributes.addFlashAttribute("success", "Catalog created successfully");
+      } catch (Exception e) {
+         log.error("Error creating legacy catalog", e);
+         redirectAttributes.addFlashAttribute("error", "Error creating catalog: " + e.getMessage());
+      }
 
-    return buildListRedirect(dto.getModulo(), dto.getCampo(), dto.getSbsNo());
-  }
+      return buildListRedirect(dto.getModulo(), dto.getCampo(), dto.getSbsNo());
+   }
 
-  @GetMapping("/legacy/{id}/edit")
-  public String showEditLegacyForm(@PathVariable("id") Long id,
-      @RequestParam(value = "returnModulo", required = false) String returnModulo,
-      @RequestParam(value = "returnCampo", required = false) String returnCampo,
-      @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
-      @RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
-      @RequestParam(value = "returnPage", required = false) Integer returnPage,
-      @RequestParam(value = "returnSize", required = false) Integer returnSize,
-      @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
-      Model model) {
+   @GetMapping("/legacy/{id}/edit")
+   public String showEditLegacyForm(@PathVariable("id") Long id,
+            @RequestParam(value = "returnModulo", required = false) String returnModulo,
+            @RequestParam(value = "returnCampo", required = false) String returnCampo,
+            @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+            @RequestParam(value = "returnHasConversion",
+                     required = false) String returnHasConversion,
+            @RequestParam(value = "returnPage", required = false) Integer returnPage,
+            @RequestParam(value = "returnSize", required = false) Integer returnSize,
+            @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
+            Model model) {
 
-    if (!catalogEditingEnabled) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
-    }
+      if (!catalogEditingEnabled) {
+         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
+      }
 
-    CatalogItemDTO item = catalogService.getCatalogItem(CatalogSource.LEGACY, id).orElseThrow(
-        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Legacy catalog item not found"));
+      CatalogItemDTO item = catalogService.getCatalogItem(CatalogSource.LEGACY, id)
+               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Legacy catalog item not found"));
 
-    model.addAttribute("catalog", item);
-    model.addAttribute("isNew", false);
-    model.addAttribute("returnModulo", returnModulo);
-    model.addAttribute("returnCampo", returnCampo);
-    model.addAttribute("returnSbsNo", returnSbsNo);
-    model.addAttribute("returnHasConversion", returnHasConversion);
-    model.addAttribute("returnPage", returnPage);
-    model.addAttribute("returnSize", returnSize);
-    model.addAttribute("returnSearchTerm", returnSearchTerm);
-    return "catalog/form";
-  }
+      model.addAttribute("catalog", item);
+      model.addAttribute("isNew", false);
+      model.addAttribute("returnModulo", returnModulo);
+      model.addAttribute("returnCampo", returnCampo);
+      model.addAttribute("returnSbsNo", returnSbsNo);
+      model.addAttribute("returnHasConversion", returnHasConversion);
+      model.addAttribute("returnPage", returnPage);
+      model.addAttribute("returnSize", returnSize);
+      model.addAttribute("returnSearchTerm", returnSearchTerm);
+      return "catalog/form";
+   }
 
-  @PostMapping("/legacy/{id}/update")
-  public String updateLegacyCatalog(@PathVariable("id") Long id,
-      @ModelAttribute("catalog") CatalogItemDTO dto,
-      @RequestParam(value = "returnModulo", required = false) String returnModulo,
-      @RequestParam(value = "returnCampo", required = false) String returnCampo,
-      @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
-      @RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
-      @RequestParam(value = "returnPage", required = false) Integer returnPage,
-      @RequestParam(value = "returnSize", required = false) Integer returnSize,
-      @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
-      RedirectAttributes redirectAttributes) {
+   @PostMapping("/legacy/{id}/update")
+   public String updateLegacyCatalog(@PathVariable("id") Long id,
+            @ModelAttribute("catalog") CatalogItemDTO dto,
+            @RequestParam(value = "returnModulo", required = false) String returnModulo,
+            @RequestParam(value = "returnCampo", required = false) String returnCampo,
+            @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+            @RequestParam(value = "returnHasConversion",
+                     required = false) String returnHasConversion,
+            @RequestParam(value = "returnPage", required = false) Integer returnPage,
+            @RequestParam(value = "returnSize", required = false) Integer returnSize,
+            @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
+            RedirectAttributes redirectAttributes) {
 
-    if (!catalogEditingEnabled) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
-    }
+      if (!catalogEditingEnabled) {
+         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
+      }
 
-    try {
-      catalogService.updateLegacyCatalog(id, dto);
-      redirectAttributes.addFlashAttribute("success", "Catalog updated successfully");
-    } catch (Exception e) {
-      log.error("Error updating legacy catalog", e);
-      redirectAttributes.addFlashAttribute("error", "Error updating catalog: " + e.getMessage());
-    }
+      try {
+         catalogService.updateLegacyCatalog(id, dto);
+         redirectAttributes.addFlashAttribute("success", "Catalog updated successfully");
+      } catch (Exception e) {
+         log.error("Error updating legacy catalog", e);
+         redirectAttributes.addFlashAttribute("error", "Error updating catalog: " + e.getMessage());
+      }
 
-    return buildListRedirect(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-        returnPage, returnSize, returnSearchTerm);
-  }
+      return buildListRedirect(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+               returnPage, returnSize, returnSearchTerm);
+   }
 
-  @PostMapping("/legacy/{id}/delete")
-  public String deleteLegacyCatalog(@PathVariable("id") Long id,
-      @RequestParam(value = "returnModulo", required = false) String returnModulo,
-      @RequestParam(value = "returnCampo", required = false) String returnCampo,
-      @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
-      @RequestParam(value = "returnHasConversion", required = false) String returnHasConversion,
-      @RequestParam(value = "returnPage", required = false) Integer returnPage,
-      @RequestParam(value = "returnSize", required = false) Integer returnSize,
-      @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
-      RedirectAttributes redirectAttributes) {
+   @PostMapping("/legacy/{id}/delete")
+   public String deleteLegacyCatalog(@PathVariable("id") Long id,
+            @RequestParam(value = "returnModulo", required = false) String returnModulo,
+            @RequestParam(value = "returnCampo", required = false) String returnCampo,
+            @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+            @RequestParam(value = "returnHasConversion",
+                     required = false) String returnHasConversion,
+            @RequestParam(value = "returnPage", required = false) Integer returnPage,
+            @RequestParam(value = "returnSize", required = false) Integer returnSize,
+            @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
+            RedirectAttributes redirectAttributes) {
 
-    if (!catalogEditingEnabled) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
-    }
+      if (!catalogEditingEnabled) {
+         throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Catalog editing is disabled");
+      }
 
-    try {
-      CatalogItemDTO item = catalogService.getCatalogItem(CatalogSource.LEGACY, id).orElseThrow(
-          () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Legacy catalog item not found"));
+      try {
+         CatalogItemDTO item = catalogService.getCatalogItem(CatalogSource.LEGACY, id)
+                  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                           "Legacy catalog item not found"));
 
-      catalogService.deleteLegacyCatalog(id);
-      redirectAttributes.addFlashAttribute("success", "Catalog deleted successfully");
-    } catch (Exception e) {
-      log.error("Error deleting legacy catalog", e);
-      redirectAttributes.addFlashAttribute("error", "Error deleting catalog: " + e.getMessage());
-    }
+         catalogService.deleteLegacyCatalog(id);
+         redirectAttributes.addFlashAttribute("success", "Catalog deleted successfully");
+      } catch (Exception e) {
+         log.error("Error deleting legacy catalog", e);
+         redirectAttributes.addFlashAttribute("error", "Error deleting catalog: " + e.getMessage());
+      }
 
-    return buildListRedirect(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
-        returnPage, returnSize, returnSearchTerm);
-  }
+      return buildListRedirect(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+               returnPage, returnSize, returnSearchTerm);
+   }
 
-  private String buildListRedirect(String modulo, String campo, Integer sbsNo) {
-    return buildListRedirect(modulo, campo, sbsNo, null, null, null, null);
-  }
+   private String buildListRedirect(String modulo, String campo, Integer sbsNo) {
+      return buildListRedirect(modulo, campo, sbsNo, null, null, null, null);
+   }
 
-  private String buildListRedirect(String modulo, String campo, Integer sbsNo, String hasConversion,
-      Integer page, Integer size, String searchTerm) {
-    StringBuilder url = new StringBuilder("redirect:/catalogs");
-    boolean hasParam = false;
+   private String buildListRedirect(String modulo, String campo, Integer sbsNo,
+            String hasConversion, Integer page, Integer size, String searchTerm) {
+      StringBuilder url = new StringBuilder("redirect:/catalogs");
+      boolean hasParam = false;
 
-    if (modulo != null && !modulo.isEmpty()) {
-      url.append(hasParam ? "&" : "?").append("modulo=").append(modulo);
-      hasParam = true;
-    }
-    if (campo != null && !campo.isEmpty()) {
-      url.append(hasParam ? "&" : "?").append("campo=").append(campo);
-      hasParam = true;
-    }
-    if (sbsNo != null) {
-      url.append(hasParam ? "&" : "?").append("sbsNo=").append(sbsNo);
-      hasParam = true;
-    }
-    if (hasConversion != null && !hasConversion.isEmpty()) {
-      url.append(hasParam ? "&" : "?").append("hasConversion=").append(hasConversion);
-      hasParam = true;
-    }
-    if (page != null && page > 0) {
-      url.append(hasParam ? "&" : "?").append("page=").append(page);
-      hasParam = true;
-    }
-    if (size != null) {
-      url.append(hasParam ? "&" : "?").append("size=").append(size);
-      hasParam = true;
-    }
-    if (searchTerm != null && !searchTerm.isEmpty()) {
-      url.append(hasParam ? "&" : "?").append("searchTerm=").append(searchTerm);
-    }
+      if (modulo != null && !modulo.isEmpty()) {
+         url.append(hasParam ? "&" : "?").append("modulo=").append(modulo);
+         hasParam = true;
+      }
+      if (campo != null && !campo.isEmpty()) {
+         url.append(hasParam ? "&" : "?").append("campo=").append(campo);
+         hasParam = true;
+      }
+      if (sbsNo != null) {
+         url.append(hasParam ? "&" : "?").append("sbsNo=").append(sbsNo);
+         hasParam = true;
+      }
+      if (hasConversion != null && !hasConversion.isEmpty()) {
+         url.append(hasParam ? "&" : "?").append("hasConversion=").append(hasConversion);
+         hasParam = true;
+      }
+      if (page != null && page > 0) {
+         url.append(hasParam ? "&" : "?").append("page=").append(page);
+         hasParam = true;
+      }
+      if (size != null) {
+         url.append(hasParam ? "&" : "?").append("size=").append(size);
+         hasParam = true;
+      }
+      if (searchTerm != null && !searchTerm.isEmpty()) {
+         url.append(hasParam ? "&" : "?").append("searchTerm=").append(searchTerm);
+      }
 
-    return url.toString();
-  }
+      return url.toString();
+   }
 }

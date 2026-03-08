@@ -20,43 +20,43 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RvCatalogos {
 
-  @Id
-  @Column(name = "P_ID")
-  private Long id;
+   @Id
+   @Column(name = "P_ID")
+   private Long id;
 
-  @Column(name = "SBS_NO", nullable = false)
-  private Integer sbsNo;
+   @Column(name = "SBS_NO", nullable = false)
+   private Integer sbsNo;
 
-  @Column(name = "MODULO", nullable = false, length = 50)
-  private String modulo;
+   @Column(name = "MODULO", nullable = false, length = 50)
+   private String modulo;
 
-  @Column(name = "CAMPO", nullable = false, length = 50)
-  private String campo;
+   @Column(name = "CAMPO", nullable = false, length = 50)
+   private String campo;
 
-  @Column(name = "VALOR", nullable = false, length = 100)
-  private String valor;
+   @Column(name = "VALOR", nullable = false, length = 100)
+   private String valor;
 
-  @Column(name = "DESCRIPCION", length = 200)
-  private String descripcion;
+   @Column(name = "DESCRIPCION", length = 200)
+   private String descripcion;
 
-  @Column(name = "ACTIVO", nullable = false)
-  private Integer activo;
+   @Column(name = "ACTIVO", nullable = false)
+   private Integer activo;
 
-  @Column(name = "ORDEN")
-  private Integer orden;
+   @Column(name = "ORDEN")
+   private Integer orden;
 
-  @Column(name = "CREADO_POR", nullable = false, length = 30)
-  private String creadoPor;
+   @Column(name = "CREADO_POR", nullable = false, length = 30)
+   private String creadoPor;
 
-  @Column(name = "FECHA_CREACION", nullable = false)
-  private LocalDateTime fechaCreacion;
+   @Column(name = "FECHA_CREACION", nullable = false)
+   private LocalDateTime fechaCreacion;
 
-  @Column(name = "MODIFICADO_POR", length = 30)
-  private String modificadoPor;
+   @Column(name = "MODIFICADO_POR", length = 30)
+   private String modificadoPor;
 
-  @Column(name = "FECHA_MODIFICACION")
-  private LocalDateTime fechaModificacion;
+   @Column(name = "FECHA_MODIFICACION")
+   private LocalDateTime fechaModificacion;
 
-  @Column(name = "ESTADO", length = 100)
-  private String estado;
+   @Column(name = "ESTADO", length = 100)
+   private String estado;
 }

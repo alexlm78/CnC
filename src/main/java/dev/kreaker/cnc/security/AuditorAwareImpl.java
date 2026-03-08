@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuditorAwareImpl implements AuditorAware<String> {
 
-  @Override
-  public Optional<String> getCurrentAuditor() {
-    return Optional.ofNullable(SecurityContextHolder.getContext())
-        .map(SecurityContext::getAuthentication).filter(Authentication::isAuthenticated)
-        .map(Authentication::getName).filter(name -> !"anonymousUser".equals(name));
-  }
+   @Override
+   public Optional<String> getCurrentAuditor() {
+      return Optional.ofNullable(SecurityContextHolder.getContext())
+               .map(SecurityContext::getAuthentication).filter(Authentication::isAuthenticated)
+               .map(Authentication::getName).filter(name -> !"anonymousUser".equals(name));
+   }
 }

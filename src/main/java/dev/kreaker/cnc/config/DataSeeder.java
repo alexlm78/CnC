@@ -17,19 +17,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataSeeder implements CommandLineRunner {
 
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
+   private final UserRepository userRepository;
+   private final PasswordEncoder passwordEncoder;
 
-  @Override
-  public void run(String @NonNull... args) {
-    if (!userRepository.existsByUsername("kreaker")) {
-      var user = CncUser.builder().username("kreaker").email("alejandro@kreaker.dev")
-          .password(passwordEncoder.encode("kreaker123")).displayName("Kreaker").enabled(true)
-          .build();
-      userRepository.save(user);
-      log.info("Seed user 'kreaker' created successfully.");
-    } else {
-      log.info("Seed user 'kreaker' already exists, skipping.");
-    }
-  }
+   @Override
+   public void run(String @NonNull... args) {
+      if (!userRepository.existsByUsername("kreaker")) {
+         var user = CncUser.builder().username("kreaker").email("alejandro@kreaker.dev")
+                  .password(passwordEncoder.encode("kreaker123")).displayName("Kreaker")
+                  .enabled(true).build();
+         userRepository.save(user);
+         log.info("Seed user 'kreaker' created successfully.");
+      } else {
+         log.info("Seed user 'kreaker' already exists, skipping.");
+      }
+   }
 }

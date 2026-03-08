@@ -12,20 +12,20 @@ import dev.kreaker.cnc.domain.model.CatalogSource;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-  @Override
-  public void addViewControllers(ViewControllerRegistry registry) {
-    registry.addRedirectViewController("/", "/catalogs");
-  }
+   @Override
+   public void addViewControllers(ViewControllerRegistry registry) {
+      registry.addRedirectViewController("/", "/catalogs");
+   }
 
-  @Override
-  public void addFormatters(FormatterRegistry registry) {
-    registry.addConverter(new StringToCatalogSourceConverter());
-  }
+   @Override
+   public void addFormatters(FormatterRegistry registry) {
+      registry.addConverter(new StringToCatalogSourceConverter());
+   }
 
-  public static class StringToCatalogSourceConverter implements Converter<String, CatalogSource> {
-    @Override
-    public CatalogSource convert(String source) {
-      return CatalogSource.valueOf(source.toUpperCase());
-    }
-  }
+   public static class StringToCatalogSourceConverter implements Converter<String, CatalogSource> {
+      @Override
+      public CatalogSource convert(String source) {
+         return CatalogSource.valueOf(source.toUpperCase());
+      }
+   }
 }
