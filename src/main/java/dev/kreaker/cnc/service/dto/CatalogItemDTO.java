@@ -32,6 +32,10 @@ public class CatalogItemDTO {
    private String conversionDomain;
    private Integer conversionStatus;
 
+   private boolean hasTarget;
+   private String srcTable;
+   private String srcField;
+
    private String sourceDisplay;
 
    public AlCatalogTwostepId getConversionKey() {

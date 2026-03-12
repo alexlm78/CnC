@@ -80,6 +80,18 @@
 				</div>
 			</div>
 
+			<!-- Target Info -->
+			<div class="row mb-3" th:if="${item.hasTarget}">
+				<div class="col-md-6">
+					<label class="form-label fw-bold">Target (SRCTABLE)</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.srcTable} ?: '-'">table</p>
+				</div>
+				<div class="col-md-6">
+					<label class="form-label fw-bold">Target (SRCFIELD)</label>
+					<p class="form-control-plaintext border rounded px-2" th:text="${item.srcField} ?: '-'">field</p>
+				</div>
+			</div>
+
 			<hr>
 
 			<div class="d-flex gap-2">

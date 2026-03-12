@@ -236,6 +236,41 @@ public class CatalogController {
                returnPage, returnSize, returnSearchTerm);
    }
 
+   @PostMapping("/target/save")
+   public String saveTarget(@RequestParam("modulo") String modulo,
+            @RequestParam("campo") String campo, @RequestParam("valor") String valor,
+            @RequestParam("cadena") Integer cadena,
+            @RequestParam(value = "srcTable", required = false) String srcTable,
+            @RequestParam(value = "srcField", required = false) String srcField,
+            @RequestParam(value = "returnModulo", required = false) String returnModulo,
+            @RequestParam(value = "returnCampo", required = false) String returnCampo,
+            @RequestParam(value = "returnSbsNo", required = false) Integer returnSbsNo,
+            @RequestParam(value = "returnHasConversion",
+                     required = false) String returnHasConversion,
+            @RequestParam(value = "returnPage", required = false) Integer returnPage,
+            @RequestParam(value = "returnSize", required = false) Integer returnSize,
+            @RequestParam(value = "returnSearchTerm", required = false) String returnSearchTerm,
+            RedirectAttributes redirectAttributes) {
+
+      try {
+         boolean hasValue = (srcTable != null && !srcTable.isBlank())
+                  || (srcField != null && !srcField.isBlank());
+         if (hasValue) {
+            catalogService.saveTarget(modulo, campo, valor, cadena, srcTable, srcField);
+            redirectAttributes.addFlashAttribute("success", "Target saved successfully");
+         } else {
+            catalogService.deleteTarget(modulo, campo, valor, cadena);
+            redirectAttributes.addFlashAttribute("success", "Target removed successfully");
+         }
+      } catch (Exception e) {
+         log.error("Error saving target", e);
+         redirectAttributes.addFlashAttribute("error", "Error saving target: " + e.getMessage());
+      }
+
+      return buildListRedirect(returnModulo, returnCampo, returnSbsNo, returnHasConversion,
+               returnPage, returnSize, returnSearchTerm);
+   }
+
    private String buildListRedirect(String modulo, String campo, Integer sbsNo) {
       return buildListRedirect(modulo, campo, sbsNo, null, null, null, null);
    }

@@ -11,11 +11,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import dev.kreaker.cnc.domain.entity.AlCatalogTargets;
 import dev.kreaker.cnc.domain.entity.AlCatalogTwostep;
 import dev.kreaker.cnc.domain.entity.AlCatalogTwostepId;
 import dev.kreaker.cnc.domain.entity.RvCatalogos;
 import dev.kreaker.cnc.domain.entity.RvRproCatalogo;
 import dev.kreaker.cnc.domain.model.CatalogSource;
+import dev.kreaker.cnc.domain.repository.AlCatalogTargetsRepository;
 import dev.kreaker.cnc.domain.repository.AlCatalogTwostepRepository;
 import dev.kreaker.cnc.domain.repository.RvCatalogosRepository;
 import dev.kreaker.cnc.domain.repository.RvRproCatalogoRepository;
@@ -33,6 +35,7 @@ public class CatalogService {
    private final RvCatalogosRepository catalogosRepository;
    private final RvRproCatalogoRepository rproCatalogoRepository;
    private final AlCatalogTwostepRepository conversionRepository;
+   private final AlCatalogTargetsRepository targetsRepository;
 
    public List<CatalogItemDTO> getUnifiedCatalog(CatalogFilterDTO filter) {
       List<CatalogItemDTO> result = new ArrayList<>();
@@ -179,6 +182,11 @@ public class CatalogService {
          item.setConversionDomain(conversion.getDomain());
          item.setConversionStatus(conversion.getStatus());
       });
+      targetsRepository.findById(key).ifPresent(target -> {
+         item.setHasTarget(true);
+         item.setSrcTable(target.getSrcTable());
+         item.setSrcField(target.getSrcField());
+      });
    }
 
    public CatalogItemDTO createLegacyCatalog(CatalogItemDTO dto) {
@@ -272,6 +280,11 @@ public class CatalogService {
                            return existing; // Keep the first occurrence
                         }));
 
+      List<AlCatalogTargets> targets = targetsRepository.findAll();
+      Map<AlCatalogTwostepId, AlCatalogTargets> targetMap =
+               targets.stream().collect(Collectors.toMap(AlCatalogTargets::getId,
+                        Function.identity(), (existing, replacement) -> existing));
+
       items.forEach(item -> {
          AlCatalogTwostepId key = item.getConversionKey();
          AlCatalogTwostep conversion = conversionMap.get(key);
@@ -281,6 +294,15 @@ public class CatalogService {
             item.setConversionStatus(conversion.getStatus());
          } else {
             item.setHasConversion(false);
+         }
+
+         AlCatalogTargets target = targetMap.get(key);
+         if (target != null) {
+            item.setHasTarget(true);
+            item.setSrcTable(target.getSrcTable());
+            item.setSrcField(target.getSrcField());
+         } else {
+            item.setHasTarget(false);
          }
       });
    }
@@ -301,6 +323,26 @@ public class CatalogService {
          throw new IllegalStateException(
                   "Catalog item exists in RV_RPRO_CATALOGO and cannot be modified in RV_CATALOGOS");
       }
+   }
+
+   public void saveTarget(String modulo, String campo, String valor, Integer cadena,
+            String srcTable, String srcField) {
+      AlCatalogTwostepId key = new AlCatalogTwostepId(modulo, campo, valor, cadena);
+      AlCatalogTargets target = targetsRepository.findById(key).orElseGet(() -> {
+         AlCatalogTargets t = new AlCatalogTargets();
+         t.setId(key);
+         return t;
+      });
+      target.setSrcTable(srcTable);
+      target.setSrcField(srcField);
+      targetsRepository.save(target);
+      log.info("Saved target for key: {}", key);
+   }
+
+   public void deleteTarget(String modulo, String campo, String valor, Integer cadena) {
+      AlCatalogTwostepId key = new AlCatalogTwostepId(modulo, campo, valor, cadena);
+      targetsRepository.deleteById(key);
+      log.info("Deleted target for key: {}", key);
    }
 
    /**

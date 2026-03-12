@@ -237,7 +237,8 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr th:each="item : ${catalogs}">
+					<th:block th:each="item, iterStat : ${catalogs}">
+					<tr>
 						<td>
 							<!-- View button for all catalogs -->
 							<a th:href="@{/catalogs/{source}/{id}(source=${item.source.name()},id=${item.sourceId},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}"
@@ -245,14 +246,22 @@
 							   title="View Catalog Details">
 								&#128065;
 							</a>
+							<!-- Target toggle -->
+							<button th:if="${item.hasTarget}"
+									type="button"
+									class="catalog-edit-icon target-toggle-btn"
+									th:attr="data-target='#targetRow-' + ${iterStat.index}"
+									title="Show Target Info">
+								&#127919;
+							</button>
 							<!-- Edit and Delete only for LEGACY when editing is enabled -->
 							<th:block th:if="${catalogEditingEnabled && item.source == T(dev.kreaker.cnc.domain.model.CatalogSource).LEGACY}">
-								<a th:href="@{/catalogs/legacy/{id}/edit(id=${item.sourceId},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}" 
+								<a th:href="@{/catalogs/legacy/{id}/edit(id=${item.sourceId},returnModulo=${filter.modulo},returnCampo=${filter.campo},returnSbsNo=${filter.sbsNo},returnHasConversion=${filter.hasConversion},returnPage=${currentPage},returnSize=${pageSize},returnSearchTerm=${filter.searchTerm})}"
 								   class="catalog-edit-icon"
 								   title="Edit Catalog">
 									&#9998;
 								</a>
-								<form th:action="@{/catalogs/legacy/{id}/delete(id=${item.sourceId})}" 
+								<form th:action="@{/catalogs/legacy/{id}/delete(id=${item.sourceId})}"
 									  method="post"
 									  class="d-inline">
 									<input type="hidden" name="returnModulo" th:value="${filter.modulo}">
@@ -310,6 +319,20 @@
 							</div>
 						</td>
 					</tr>
+					<!-- Expandable target info row (hidden by default) -->
+					<tr th:if="${item.hasTarget}"
+						th:id="'targetRow-' + ${iterStat.index}"
+						class="target-detail-row"
+						style="display: none;">
+						<td colspan="9">
+							<div class="d-flex align-items-center gap-3 ps-4">
+								<span class="badge bg-dark">Target</span>
+								<small><strong>Tabla Destino:</strong> <span th:text="${item.srcTable} ?: '-'">table</span></small>
+								<small><strong>Campo Destino:</strong> <span th:text="${item.srcField} ?: '-'">field</span></small>
+							</div>
+						</td>
+					</tr>
+					</th:block>
 					<tr th:if="${#lists.isEmpty(catalogs)}">
 						<td colspan="9" class="text-center">No catalog items found</td>
 					</tr>
@@ -503,6 +526,17 @@
 			} else {
 				searchContainer.style.display = 'none';
 			}
+		});
+
+		// Target row toggle
+		document.querySelectorAll('.target-toggle-btn').forEach(function(btn) {
+			btn.addEventListener('click', function() {
+				const targetId = btn.getAttribute('data-target');
+				const row = document.querySelector(targetId);
+				if (row) {
+					row.style.display = row.style.display === 'none' ? '' : 'none';
+				}
+			});
 		});
 
 		// Initialize on page load

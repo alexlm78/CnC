@@ -16,7 +16,7 @@ plugins {
 }
 
 group = 'dev.kreaker'
-version = '0.3.3'
+version = '0.3.5'
 description = 'Catalogs & Conversions'
 
 java {
@@ -145,13 +145,12 @@ spotless {
       importOrder('java', 'javax', 'org', 'com', 'dev')
       trimTrailingWhitespace()
       endWithNewline()
-      licenseHeader('/* (c) $YEAR Alejandro Lopez Monzon <alejandro@kreaker.dev> for Kreaker Developments */').updateYearWithLatest(true)//.replaceHeaderXml('$YEAR', Year.now().toString()).
+      licenseHeader '/* (c) 2026 Alejandro Lopez Monzon <alejandro@kreaker.dev> for Kreaker Developments */'
       replaceRegex 'Don\'t use System.out', 'System\\.out\\.println', 'log.info' // Situation: avoid 'System.out.println' use and abuse
    }
 
    json {
-      def files = getTargetFiles('.json')
-      if (files) target files else target 'src/**/*.json'
+      target 'src/**/*.json'
 
       jackson()
       leadingSpacesToTabs(2)
