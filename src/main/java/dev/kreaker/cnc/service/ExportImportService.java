@@ -31,8 +31,9 @@ public class ExportImportService {
    private final ConversionService conversionService;
 
    // CSV Headers for catalog export
-   private static final String[] CATALOG_HEADERS = {"Modulo", "Campo", "Valor", "Cadena",
-            "Descripcion", "Source", "Has_Conversion", "Conversion_Domain", "Conversion_Status"};
+   private static final String[] CATALOG_HEADERS =
+            {"Modulo", "Campo", "Valor", "Cadena", "Descripcion", "Source", "Has_Conversion",
+                     "Conversion_Domain", "Conversion_Status", "SrcTable", "SrcField"};
 
    // CSV Headers for conversion import
    private static final String[] CONVERSION_HEADERS =
@@ -60,7 +61,9 @@ public class ExportImportService {
                      item.getSourceDisplay(), item.isHasConversion() ? "Yes" : "No",
                      item.getConversionDomain() != null ? item.getConversionDomain() : "",
                      item.getConversionStatus() != null ? String.valueOf(item.getConversionStatus())
-                              : ""};
+                              : "",
+                     item.getSrcTable() != null ? item.getSrcTable() : "",
+                     item.getSrcField() != null ? item.getSrcField() : ""};
             writer.writeNext(row);
          }
       }
@@ -124,6 +127,8 @@ public class ExportImportService {
                      item.getConversionStatus() != null ? String.valueOf(item.getConversionStatus())
                               : "",
                      dataStyle);
+            createCell(row, 9, item.getSrcTable() != null ? item.getSrcTable() : "", dataStyle);
+            createCell(row, 10, item.getSrcField() != null ? item.getSrcField() : "", dataStyle);
          }
 
          // Auto-size columns
