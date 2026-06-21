@@ -35,6 +35,7 @@ public class ConversionDTO {
    @NotNull(message = "CADENA (SBS_NO) is required")
    private Integer cadena;
 
+   @NotBlank(message = "DOMAIN is required")
    @Size(max = 20, message = "DOMAIN must not exceed 20 characters")
    private String domain;
 

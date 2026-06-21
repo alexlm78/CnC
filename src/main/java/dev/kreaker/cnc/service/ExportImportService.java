@@ -3,7 +3,9 @@ package dev.kreaker.cnc.service;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -244,7 +246,7 @@ public class ExportImportService {
     */
    public ImportResultDTO importFromCsv(MultipartFile file) throws IOException, CsvException {
       ImportResultDTO result = new ImportResultDTO();
-      List<String> errors = new ArrayList<>();
+      Map<String, Integer> errorCounts = new LinkedHashMap<>();
 
       try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
          List<String[]> rows = reader.readAll();
@@ -255,7 +257,6 @@ public class ExportImportService {
             return result;
          }
 
-         // Skip header row
          boolean isFirstRow = true;
          int rowNumber = 0;
          int created = 0;
@@ -267,12 +268,12 @@ public class ExportImportService {
 
             if (isFirstRow) {
                isFirstRow = false;
-               continue; // Skip header
+               continue;
             }
 
             if (row.length < 6) {
-               errors.add("Row " + rowNumber + ": Invalid number of columns (expected 6, got "
-                        + row.length + ")");
+               errorCounts.merge("Invalid number of columns (expected 6, got " + row.length + ")",
+                        1, Integer::sum);
                failed++;
                continue;
             }
@@ -287,7 +288,7 @@ public class ExportImportService {
                   updated++;
                }
             } catch (Exception e) {
-               errors.add("Row " + rowNumber + ": " + e.getMessage());
+               errorCounts.merge(e.getMessage(), 1, Integer::sum);
                failed++;
             }
          }
@@ -296,7 +297,7 @@ public class ExportImportService {
          result.setCreated(created);
          result.setUpdated(updated);
          result.setFailed(failed);
-         result.setErrors(errors);
+         result.setErrors(toErrorSummary(errorCounts));
          result.setMessage(String.format("Import completed: %d created, %d updated, %d failed",
                   created, updated, failed));
       }
@@ -310,7 +311,7 @@ public class ExportImportService {
     */
    public ImportResultDTO importFromExcel(MultipartFile file) throws IOException {
       ImportResultDTO result = new ImportResultDTO();
-      List<String> errors = new ArrayList<>();
+      Map<String, Integer> errorCounts = new LinkedHashMap<>();
 
       try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
          Sheet sheet = workbook.getSheetAt(0);
@@ -325,7 +326,6 @@ public class ExportImportService {
          int updated = 0;
          int failed = 0;
 
-         // Skip header row (row 0)
          for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
             Row row = sheet.getRow(rowNum);
 
@@ -343,7 +343,7 @@ public class ExportImportService {
                   updated++;
                }
             } catch (Exception e) {
-               errors.add("Row " + (rowNum + 1) + ": " + e.getMessage());
+               errorCounts.merge(e.getMessage(), 1, Integer::sum);
                failed++;
             }
          }
@@ -352,7 +352,7 @@ public class ExportImportService {
          result.setCreated(created);
          result.setUpdated(updated);
          result.setFailed(failed);
-         result.setErrors(errors);
+         result.setErrors(toErrorSummary(errorCounts));
          result.setMessage(String.format("Import completed: %d created, %d updated, %d failed",
                   created, updated, failed));
       }
@@ -428,6 +428,9 @@ public class ExportImportService {
       }
       if (dto.getCadena() == null) {
          throw new IllegalArgumentException("Cadena is required");
+      }
+      if (dto.getDomain() == null || dto.getDomain().isBlank()) {
+         throw new IllegalArgumentException("Domain is required");
       }
    }
 
@@ -555,7 +558,7 @@ public class ExportImportService {
    public ImportResultDTO importCatalogsFromCsv(MultipartFile file)
             throws IOException, CsvException {
       ImportResultDTO result = new ImportResultDTO();
-      List<String> errors = new ArrayList<>();
+      Map<String, Integer> errorCounts = new LinkedHashMap<>();
 
       try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
          List<String[]> rows = reader.readAll();
@@ -584,9 +587,9 @@ public class ExportImportService {
             }
 
             if (row.length < 4) {
-               errors.add("Row " + rowNumber
-                        + ": Invalid number of columns (expected at least 4, got " + row.length
-                        + ")");
+               errorCounts.merge(
+                        "Invalid number of columns (expected at least 4, got " + row.length + ")",
+                        1, Integer::sum);
                failed++;
                continue;
             }
@@ -610,7 +613,7 @@ public class ExportImportService {
                }
 
             } catch (Exception e) {
-               errors.add("Row " + rowNumber + ": " + e.getMessage());
+               errorCounts.merge(e.getMessage(), 1, Integer::sum);
                failed++;
             }
          }
@@ -624,7 +627,7 @@ public class ExportImportService {
          result.setCreated(catalogsCreated + conversionsCreated);
          result.setUpdated(catalogsUpdated + conversionsUpdated);
          result.setFailed(failed);
-         result.setErrors(errors);
+         result.setErrors(toErrorSummary(errorCounts));
          result.setMessage(String.format(
                   "Import completed: Catalogs (%d created, %d updated), Conversions (%d created, %d updated, %d skipped), %d failed",
                   catalogsCreated, catalogsUpdated, conversionsCreated, conversionsUpdated,
@@ -640,7 +643,7 @@ public class ExportImportService {
     */
    public ImportResultDTO importCatalogsFromExcel(MultipartFile file) throws IOException {
       ImportResultDTO result = new ImportResultDTO();
-      List<String> errors = new ArrayList<>();
+      Map<String, Integer> errorCounts = new LinkedHashMap<>();
 
       try (Workbook workbook = WorkbookFactory.create(file.getInputStream())) {
          Sheet sheet = workbook.getSheetAt(0);
@@ -684,7 +687,7 @@ public class ExportImportService {
                }
 
             } catch (Exception e) {
-               errors.add("Row " + (rowNum + 1) + ": " + e.getMessage());
+               errorCounts.merge(e.getMessage(), 1, Integer::sum);
                failed++;
             }
          }
@@ -698,7 +701,7 @@ public class ExportImportService {
          result.setCreated(catalogsCreated + conversionsCreated);
          result.setUpdated(catalogsUpdated + conversionsUpdated);
          result.setFailed(failed);
-         result.setErrors(errors);
+         result.setErrors(toErrorSummary(errorCounts));
          result.setMessage(String.format(
                   "Import completed: Catalogs (%d created, %d updated), Conversions (%d created, %d updated, %d skipped), %d failed",
                   catalogsCreated, catalogsUpdated, conversionsCreated, conversionsUpdated,
@@ -844,6 +847,15 @@ public class ExportImportService {
       }
 
       return result;
+   }
+
+   private List<String> toErrorSummary(Map<String, Integer> errorCounts) {
+      List<String> summary = new ArrayList<>();
+      for (Map.Entry<String, Integer> entry : errorCounts.entrySet()) {
+         int count = entry.getValue();
+         summary.add(count + (count == 1 ? " row: " : " rows: ") + entry.getKey());
+      }
+      return summary;
    }
 
   /**

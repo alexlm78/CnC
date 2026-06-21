@@ -27,7 +27,7 @@ public class AlCatalogTwostep {
    @EmbeddedId
    private AlCatalogTwostepId id;
 
-   @Column(name = "DOMAIN", length = 20)
+   @Column(name = "DOMAIN", length = 20, nullable = false)
    private String domain;
 
    @Column(name = "STATUS")

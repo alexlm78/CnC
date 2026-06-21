@@ -51,6 +51,9 @@ public class ConversionService {
 
    @Transactional
    public ConversionDTO createConversion(ConversionDTO dto) {
+      if (dto.getDomain() == null || dto.getDomain().isBlank()) {
+         throw new IllegalArgumentException("DOMAIN is required to create a conversion");
+      }
       validateCatalogItemExists(dto.getModulo(), dto.getCampo(), dto.getValor(), dto.getCadena());
 
       // Use findById instead of existsById to avoid Oracle 11g compatibility issues
@@ -72,6 +75,9 @@ public class ConversionService {
    @Transactional
    public ConversionDTO updateConversion(String modulo, String campo, String valor, Integer cadena,
             ConversionDTO dto) {
+      if (dto.getDomain() == null || dto.getDomain().isBlank()) {
+         throw new IllegalArgumentException("DOMAIN is required to update a conversion");
+      }
       AlCatalogTwostep existing = conversionRepository
                .findById_ModuloAndId_CampoAndId_ValorAndId_Cadena(modulo, campo, valor, cadena)
                .orElseThrow(() -> new EntityNotFoundException("Conversion not found"));
